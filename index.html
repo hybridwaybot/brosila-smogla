@@ -1,253 +1,280 @@
-﻿ <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бросила и смогла</title>
-    <!-- ПРАВИЛЬНЫЙ СКРИПТ TELEGRAM -->
-    <script src="https://telegram.org"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hybrid Calorie Tracker v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --tg-bg: #f9f9fa;
-            --tg-text: #1c1c1e;
-            --tg-hint: #8e8e93;
-            --tg-primary: #5856d6;
-            --tg-primary-text: #ffffff;
-            --card-bg: #ffffff;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --accent-glow: rgba(88, 86, 214, 0.15);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--tg-bg);
-            color: var(--tg-text);
-            margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { font-size: 22px; font-weight: 700; margin: 0 0 6px 0; }
-        header p { font-size: 13px; color: var(--tg-hint); margin: 0; font-style: italic; }
-
-        .section-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--tg-hint);
-            margin: 20px 0 10px 4px;
-            font-weight: 600;
-        }
-
-        .templates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .template-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .template-card h3 { margin: 0 0 4px 0; font-size: 14px; }
-        .template-card p { margin: 0; font-size: 11px; color: var(--tg-hint); }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            background: var(--card-bg);
-            padding: 12px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .weekday { text-align: center; font-size: 11px; font-weight: 600; color: var(--tg-hint); padding-bottom: 4px; }
-
-        .day-cell {
-            aspect-ratio: 1;
-            background: var(--tg-bg);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        .day-num { font-size: 12px; font-weight: 500; }
-        .day-status { font-size: 10px; margin-top: 2px; height: 12px; }
-
-        .day-cell.has-workout { border-color: var(--tg-primary); }
-        .day-cell.completed { background: var(--tg-primary); color: var(--tg-primary-text); }
-
-        .manager-panel {
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            margin-top: 20px;
-            display: none;
-        }
-        .manager-panel h3 { margin: 0 0 12px 0; font-size: 16px; }
-        .panel-actions { display: flex; gap: 10px; }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn-primary { background: var(--tg-primary); color: var(--tg-primary-text); }
-        .btn-secondary { background: var(--tg-bg); color: var(--tg-text); border: 1px solid var(--border-color); }
+        :root { --color-dark-green: #14221b; --color-beige: #d9d2c5; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-dark-green); color: var(--color-beige); margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; }
+        .btn-primary { background-color: var(--color-beige); color: var(--color-dark-green); font-weight: 600; transition: all 0.2s ease; }
+        .btn-primary:active { transform: scale(0.96); }
+        .progress-bar { height: 8px; border-radius: 4px; background: rgba(217, 210, 197, 0.15); overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--color-beige); transition: width 0.4s ease; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input, select { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(217, 210, 197, 0.2); color: var(--color-beige); border-radius: 12px; padding: 14px; width: 100%; outline: none; font-size: 16px; }
+        input:focus { border-color: var(--color-beige); }
+        datalist { background-color: var(--color-dark-green); color: var(--color-beige); }
     </style>
 </head>
-<body>
-
-    <header>
-        <h1>Бросила и смогла</h1>
-        <p>Дисциплина — это про любовь к себе ✨</p>
-    </header>
-
-    <div class="section-title">1. Готовые шаблоны</div>
-    <div class="templates-grid">
-        <div class="template-card" onclick="applyTemplate('busy')">
-            <h3>🏃‍♀️ Для занятых</h3>
-            <p>10 тренировок в месяц.</p>
-        </div>
-        <div class="template-card" onclick="applyTemplate('intense')">
-            <h3>⚡️ Интенсив</h3>
-            <p>Через день.</p>
-        </div>
+<body class="p-4">
+    <div id="sub-overlay" class="fixed inset-0 z-50 bg-[#14221b] flex flex-col items-center justify-center p-8 text-center hidden">
+        <h2 class="text-3xl mb-4 text-beige">Hybrid Community</h2>
+        <p class="mb-8 opacity-70 text-beige">Подпишитесь на канал для активации системы.</p>
+        <a href="https://t.me/hybriddepartment" target="_blank" class="btn-primary py-4 px-8 rounded-full w-full mb-4 text-center">Подписаться</a>
+        <button onclick="checkSubscription()" class="text-beige border border-beige/30 py-3 px-8 rounded-full w-full">Проверить подписку</button>
     </div>
 
-    <div class="section-title">2. График на 28 дней</div>
-    <div class="calendar-grid">
-        <div class="weekday">Пн</div><div class="weekday">Вт</div><div class="weekday">Ср</div>
-        <div class="weekday">Чт</div><div class="weekday">Пт</div><div class="weekday">Сб</div><div class="weekday">Вс</div>
-        <div id="calendarCells" style="display: contents;"></div>
-    </div>
+    <div id="app-container" class="max-w-md mx-auto pb-24">
+        <header class="flex justify-between items-center mb-8">
+            <div><h1 class="text-2xl tracking-wider uppercase">Hybrid</h1><p class="text-[10px] opacity-50 uppercase tracking-[0.2em]">Nutrition System v2.0</p></div>
+            <div id="user-avatar" class="w-10 h-10 rounded-full bg-beige/10 border border-beige/20 overflow-hidden"><img id="avatar-img" src="" class="w-full h-full object-cover hidden"></div>
+        </header>
 
-    <div class="manager-panel" id="managerPanel">
-        <h3 id="panelTitle">День Х</h3>
-        <div class="panel-actions">
-            <button class="btn btn-secondary" id="toggleWorkoutBtn" onclick="toggleWorkout()">Запланировать</button>
-            <button class="btn btn-primary" id="toggleCompleteBtn" onclick="toggleComplete()">Выполнено</button>
-        </div>
-    </div>
+        <!-- Dashboard -->
+        <section id="dashboard-view" class="tab-content active">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-end mb-4">
+                    <div><p class="text-[10px] opacity-50 uppercase mb-1">Осталось калорий</p><h2 class="text-5xl font-bold" id="calories-left">0</h2></div>
+                    <div class="text-right"><p class="text-[10px] opacity-50 uppercase mb-1">Цель</p><p class="text-xl" id="calories-target">0</p></div>
+                </div>
+                <div class="progress-bar mb-6"><div id="calories-progress" class="progress-fill" style="width: 0%"></div></div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div><p class="text-[9px] opacity-50 uppercase mb-1">Белки</p><div class="progress-bar h-1 mb-1"><div id="p-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="p-current">0</span>/<span id="p-target">0</span>г</p></div>
+                    <div><p class="text-[9px] opacity-50 uppercase mb-1">Жиры</p><div class="progress-bar h-1 mb-1"><div id="f-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="f-current">0</span>/<span id="f-target">0</span>г</p></div>
+                    <div><p class="text-[9px] opacity-50 uppercase mb-1">Углеводы</p><div class="progress-bar h-1 mb-1"><div id="c-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="c-current">0</span>/<span id="c-target">0</span>г</p></div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mb-4"><h3 class="text-xl">Дневник</h3><button onclick="showTab('manual')" class="btn-primary px-5 py-2.5 rounded-full text-[10px] uppercase font-bold tracking-wider">+ Добавить</button></div>
+            <div id="diary-list" class="space-y-3"></div>
+        </section>
 
-    <div style="margin-top: 24px;">
-        <button class="btn btn-primary" style="width: 100%;" onclick="saveData()">Сохранить план</button>
+        <!-- Manual Add -->
+        <section id="manual-view" class="tab-content">
+            <h2 class="text-3xl mb-6">Добавить еду</h2>
+            <div class="glass-card p-6 space-y-4">
+                <div>
+                    <label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Название продукта</label>
+                    <input type="text" id="m-name" list="food-suggestions" placeholder="Начните вводить..." oninput="checkFoodDB(this.value)">
+                    <datalist id="food-suggestions"></datalist>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Вес (г)</label><input type="number" id="m-weight" value="100" oninput="recalcManual()"></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Кал / 100г</label><input type="number" id="m-k" oninput="recalcManual()"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Б / 100г</label><input type="number" id="m-p" oninput="recalcManual()"></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Ж / 100г</label><input type="number" id="m-f" oninput="recalcManual()"></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">У / 100г</label><input type="number" id="m-c" oninput="recalcManual()"></div>
+                </div>
+                <div class="p-5 bg-white/5 rounded-2xl text-center border border-white/5">
+                    <p class="text-[10px] opacity-40 uppercase mb-1">Итого в порции</p>
+                    <p id="m-total" class="font-bold text-3xl text-beige">0 ккал</p>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="showTab('dashboard')" class="flex-1 py-4 border border-beige/20 rounded-xl uppercase text-[10px] font-bold tracking-widest">Назад</button>
+                    <button onclick="saveManual()" class="flex-[2] btn-primary py-4 rounded-xl uppercase text-[10px] font-bold tracking-widest">Добавить</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile -->
+        <section id="profile-view" class="tab-content">
+            <h2 class="text-3xl mb-6">Профиль</h2>
+            <div class="glass-card p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Пол</label><select id="gender"><option value="male">Мужской</option><option value="female">Женский</option></select></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Возраст</label><input type="number" id="age" placeholder="25"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Вес (кг)</label><input type="number" id="weight" placeholder="75"></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Рост (см)</label><input type="number" id="height" placeholder="180"></div>
+                </div>
+                <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Активность</label><select id="activity"><option value="1.2">Минимальная</option><option value="1.375">Слабая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option><option value="1.9">Экстремальная</option></select></div>
+                <button onclick="saveProfile()" class="btn-primary w-full py-4 rounded-xl mt-4 uppercase text-[10px] font-bold tracking-widest">Сохранить данные</button>
+            </div>
+        </section>
+
+        <nav class="fixed bottom-6 left-4 right-4 h-20 glass-card flex items-center justify-around px-4">
+            <button onclick="showTab('dashboard')" class="nav-btn flex flex-col items-center transition-all" id="nav-dashboard"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Дневник</span></button>
+            <button onclick="showTab('profile')" class="nav-btn flex flex-col items-center opacity-40" id="nav-profile"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Профиль</span></button>
+        </nav>
     </div>
 
     <script>
-        // Инициализация Telegram объекта
-        let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        
-        if (tg) {
-            tg.ready();
-            tg.expand();
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        let userProfile = null, diary = [];
+        const BOT_TOKEN = '8821569325:AAEz0hGIVdG1Ti3lCNuR9twOxre_uDqFHRI';
+        const CHANNEL_ID = '@hybriddepartment';
+
+        const FOOD_DB = [
+            {n:"Куриная грудка (отварная)", k:165, p:31, f:3.6, c:0},
+            {n:"Куриная грудка (жареная)", k:210, p:28, f:10, c:0},
+            {n:"Говядина отварная", k:254, p:25, f:17, c:0},
+            {n:"Свинина (вырезка)", k:142, p:19, f:7, c:0},
+            {n:"Индейка (филе)", k:115, p:24, f:2, c:0},
+            {n:"Яйцо вареное (1 шт)", k:75, p:6.5, f:5, c:0.5},
+            {n:"Омлет из 2 яиц", k:154, p:11, f:12, c:0.6},
+            {n:"Рис отварной", k:130, p:2.7, f:0.3, c:28},
+            {n:"Гречка отварная", k:110, p:4.2, f:1.1, c:21},
+            {n:"Макароны (тв. сорта)", k:158, p:5.8, f:0.9, c:31},
+            {n:"Овсянка на воде", k:88, p:3, f:1.7, c:15},
+            {n:"Картофель отварной", k:82, p:2, f:0.4, c:17},
+            {n:"Картофель фри", k:312, p:3.4, f:15, c:41},
+            {n:"Творог 5%", k:121, p:17, f:5, c:3},
+            {n:"Кефир 1%", k:40, p:3, f:1, c:4},
+            {n:"Молоко 2.5%", k:54, p:3, f:2.5, c:4.7},
+            {n:"Сыр Российский", k:363, p:23, f:29, c:0},
+            {n:"Яблоко", k:52, p:0.3, f:0.2, c:14},
+            {n:"Банан", k:89, p:1.1, f:0.3, c:23},
+            {n:"Огурец", k:15, p:0.8, f:0.1, c:3},
+            {n:"Помидор", k:18, p:0.9, f:0.2, c:3.9},
+            {n:"Авокадо", k:160, p:2, f:15, c:9},
+            {n:"Миндаль", k:579, p:21, f:50, c:22},
+            {n:"Грецкий орех", k:654, p:15, f:65, c:14},
+            {n:"Лосось (семга)", k:208, p:20, f:13, c:0},
+            {n:"Тунец консерв.", k:116, p:26, f:1, c:0},
+            {n:"Протеин (1 черпак)", k:120, p:24, f:1.5, c:3},
+            {n:"Хлеб цельнозерновой", k:247, p:13, f:3.4, c:41},
+            {n:"Масло оливковое", k:884, p:0, f:100, c:0},
+            {n:"Кофе без сахара", k:2, p:0.2, f:0, c:0},
+            {n:"Борщ", k:49, p:3, f:2.2, c:4.3},
+            {n:"Цезарь с курицей", k:180, p:12, f:10, c:8}
+        ];
+
+        function init() {
+            checkSubscription();
+            loadUserData();
+            populateSuggestions();
+            if (tg.initDataUnsafe?.user?.photo_url) {
+                const img = document.getElementById('avatar-img');
+                img.src = tg.initDataUnsafe.user.photo_url;
+                img.classList.remove('hidden');
+            }
+            showTab(userProfile ? 'dashboard' : 'profile');
+            updateUI();
         }
 
-        let planData = Array.from({ length: 28 }, (_, i) => ({
-            day: i + 1,
-            hasWorkout: false,
-            completed: false
-        }));
-
-        let selectedDayIndex = null;
-
-        function renderCalendar() {
-            const container = document.getElementById('calendarCells');
-            container.innerHTML = '';
-
-            planData.forEach((dayData, index) => {
-                const cell = document.createElement('div');
-                cell.className = `day-cell`;
-                if (dayData.hasWorkout) cell.classList.add('has-workout');
-                if (dayData.completed) cell.classList.add('completed');
-                
-                let statusIcon = '';
-                if (dayData.completed) statusIcon = '✅';
-                else if (dayData.hasWorkout) statusIcon = '💪';
-
-                cell.innerHTML = `
-                    <span class="day-num">${dayData.day}</span>
-                    <span class="day-status">${statusIcon}</span>
-                `;
-
-                cell.onclick = () => openDayManager(index);
-                container.appendChild(cell);
+        function populateSuggestions() {
+            const list = document.getElementById('food-suggestions');
+            FOOD_DB.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.n;
+                list.appendChild(opt);
             });
         }
 
-        function applyTemplate(type) {
-            planData.forEach((day, i) => {
-                day.completed = false;
-                if (type === 'busy') {
-                    day.hasWorkout = (i % 7 === 2 || i % 7 === 5);
-                } else if (type === 'intense') {
-                    day.hasWorkout = (i % 2 === 0);
-                }
-            });
-            if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            document.getElementById('managerPanel').style.display = 'none';
-            renderCalendar();
-        }
-
-        function openDayManager(index) {
-            selectedDayIndex = index;
-            const dayData = planData[index];
-            document.getElementById('panelTitle').innerText = `День ${dayData.day}`;
-            
-            const workoutBtn = document.getElementById('toggleWorkoutBtn');
-            const completeBtn = document.getElementById('toggleCompleteBtn');
-
-            workoutBtn.innerText = dayData.hasWorkout ? 'Убрать план' : 'Запланировать';
-            completeBtn.style.display = dayData.hasWorkout ? 'block' : 'none';
-            completeBtn.innerText = dayData.completed ? 'Сбросить' : 'Выполнено';
-
-            document.getElementById('managerPanel').style.display = 'block';
-        }
-
-        function toggleWorkout() {
-            if (selectedDayIndex === null) return;
-            const day = planData[selectedDayIndex];
-            day.hasWorkout = !day.hasWorkout;
-            if (!day.hasWorkout) day.completed = false;
-            if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            openDayManager(selectedDayIndex);
-            renderCalendar();
-        }
-
-        function toggleComplete() {
-            if (selectedDayIndex === null) return;
-            const day = planData[selectedDayIndex];
-            day.completed = !day.completed;
-            if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            openDayManager(selectedDayIndex);
-            renderCalendar();
-        }
-
-        function saveData() {
-            const total = planData.filter(d => d.hasWorkout).length;
-            const done = planData.filter(d => d.completed).length;
-            const summary = { text: `Всего тренировок: ${total}, выполнено: ${done}!` };
-
-            if (tg) {
-                tg.sendData(JSON.stringify(summary));
-                tg.close();
-            } else {
-                alert("План сохранен локально: " + summary.text);
+        function checkFoodDB(val) {
+            const food = FOOD_DB.find(f => f.n === val);
+            if (food) {
+                document.getElementById('m-k').value = food.k;
+                document.getElementById('m-p').value = food.p;
+                document.getElementById('m-f').value = food.f;
+                document.getElementById('m-c').value = food.c;
+                recalcManual();
             }
         }
 
-        renderCalendar();
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId + '-view').classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.add('opacity-40'));
+            const nav = document.getElementById('nav-' + (tabId === 'manual' ? 'dashboard' : tabId));
+            if(nav) nav.classList.remove('opacity-40');
+        }
+
+        function loadUserData() {
+            const saved = localStorage.getItem('hybrid_user_profile');
+            if (saved) {
+                userProfile = JSON.parse(saved);
+                const savedDiary = localStorage.getItem('hybrid_diary_' + getTodayKey());
+                if (savedDiary) diary = JSON.parse(savedDiary);
+            }
+        }
+
+        function saveProfile() {
+            const age = document.getElementById('age').value, weight = document.getElementById('weight').value, height = document.getElementById('height').value;
+            if (!age || !weight || !height) { tg.showAlert('Заполните все поля'); return; }
+            userProfile = { gender: document.getElementById('gender').value, age: parseInt(age), weight: parseInt(weight), height: parseInt(height), activity: document.getElementById('activity').value };
+            let bmr = userProfile.gender === 'male' ? (10 * userProfile.weight + 6.25 * userProfile.height - 5 * userProfile.age + 5) : (10 * userProfile.weight + 6.25 * userProfile.height - 5 * userProfile.age - 161);
+            const tdee = bmr * parseFloat(userProfile.activity);
+            userProfile.targets = { kcal: Math.round(tdee), p: Math.round(tdee * 0.3 / 4), f: Math.round(tdee * 0.3 / 9), c: Math.round(tdee * 0.4 / 4) };
+            localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+            tg.HapticFeedback.notificationOccurred('success');
+            showTab('dashboard');
+            updateUI();
+        }
+
+        function getTodayKey() { return new Date().toISOString().split('T')[0]; }
+
+        function updateUI() {
+            if (!userProfile) return;
+            const targets = userProfile.targets;
+            const cur = diary.reduce((acc, i) => { acc.k += i.k; acc.p += i.p; acc.f += i.f; acc.c += i.c; return acc; }, {k:0, p:0, f:0, c:0});
+            document.getElementById('calories-target').innerText = targets.kcal;
+            document.getElementById('calories-left').innerText = Math.max(0, targets.kcal - Math.round(cur.k));
+            document.getElementById('calories-progress').style.width = Math.min(100, (cur.k / targets.kcal) * 100) + '%';
+            updateMacro('p', cur.p, targets.p); updateMacro('f', cur.f, targets.f); updateMacro('c', cur.c, targets.c);
+            const list = document.getElementById('diary-list');
+            list.innerHTML = diary.length ? '' : '<p class="text-center opacity-40 py-8 text-xs">Дневник пуст</p>';
+            diary.forEach((item, idx) => {
+                const el = document.createElement('div');
+                el.className = 'glass-card p-4 flex justify-between items-center';
+                el.innerHTML = `<div><p class="font-semibold text-sm">${item.name} (${item.w}г)</p><p class="text-[10px] opacity-50 uppercase">${Math.round(item.k)} ккал | Б:${Math.round(item.p)} Ж:${Math.round(item.f)} У:${Math.round(item.c)}</p></div><button onclick="removeItem(${idx})" class="opacity-30 p-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+                list.appendChild(el);
+            });
+        }
+
+        function updateMacro(id, cur, tar) {
+            document.getElementById(id + '-current').innerText = Math.round(cur);
+            document.getElementById(id + '-target').innerText = tar;
+            document.getElementById(id + '-progress').style.width = Math.min(100, (cur / tar) * 100) + '%';
+        }
+
+        function removeItem(idx) { diary.splice(idx, 1); localStorage.setItem('hybrid_diary_' + getTodayKey(), JSON.stringify(diary)); updateUI(); }
+
+        function recalcManual() {
+            const w = parseFloat(document.getElementById('m-weight').value) || 0;
+            const k = parseFloat(document.getElementById('m-k').value) || 0;
+            document.getElementById('m-total').innerText = Math.round((k * w) / 100) + ' ккал';
+        }
+
+        function saveManual() {
+            const name = document.getElementById('m-name').value, w = parseFloat(document.getElementById('m-weight').value), k = parseFloat(document.getElementById('m-k').value);
+            if (!name || isNaN(w) || isNaN(k)) { tg.showAlert('Укажите название, вес и калории'); return; }
+            const p = parseFloat(document.getElementById('m-p').value) || 0, f = parseFloat(document.getElementById('m-f').value) || 0, c = parseFloat(document.getElementById('m-c').value) || 0;
+            diary.unshift({ name, w, k: (k * w) / 100, p: (p * w) / 100, f: (f * w) / 100, c: (c * w) / 100 });
+            localStorage.setItem('hybrid_diary_' + getTodayKey(), JSON.stringify(diary));
+            ['m-name', 'm-k', 'm-p', 'm-f', 'm-c'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('m-weight').value = 100;
+            document.getElementById('m-total').innerText = '0 ккал';
+            tg.HapticFeedback.notificationOccurred('success');
+            showTab('dashboard');
+            updateUI();
+        }
+
+        async function checkSubscription() {
+            const userId = tg.initDataUnsafe?.user?.id;
+            if (!userId) return;
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_ID}&user_id=${userId}`);
+                const data = await res.json();
+                if (data.ok && !['member', 'administrator', 'creator'].includes(data.result.status)) {
+                    document.getElementById('sub-overlay').classList.remove('hidden');
+                } else {
+                    document.getElementById('sub-overlay').classList.add('hidden');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
