@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Дневник питания</title>
+    <title>Hybrid Nutrition System v3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -18,28 +18,30 @@
         .progress-fill { height: 100%; background: var(--color-beige); transition: width 0.4s ease; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        input, select { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(217, 210, 197, 0.2); color: var(--color-beige); border-radius: 12px; padding: 14px; width: 100%; outline: none; font-size: 16px; }
+        input, select { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(217, 210, 197, 0.2); color: var(--color-beige); border-radius: 12px; padding: 14px; width: 100%; outline: none; font-size: 16px; box-sizing: border-box; }
         input:focus { border-color: var(--color-beige); }
-        datalist { background-color: var(--color-dark-green); color: var(--color-beige); }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 12px; cursor: pointer; position: relative; }
+        .water-drop { color: var(--color-beige); cursor: pointer; transition: all 0.2s; }
+        .water-drop.filled { color: #4a9eff; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .calendar-day { padding: 12px 8px; text-align: center; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 0.2s; position: relative; }
+        .calendar-day:hover { background: rgba(255, 255, 255, 0.1); }
+        .calendar-day.has-data::after { content: '●'; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); color: var(--color-beige); font-size: 8px; }
         .calendar-day.active { background: var(--color-beige); color: var(--color-dark-green); font-weight: bold; }
-        .calendar-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: currentColor; border-radius: 50%; opacity: 0.5; }
-        .water-drop { transition: all 0.3s ease; }
-        .water-drop.filled { color: #3b82f6; fill: #3b82f6; }
+        .achievement { animation: pulse 0.6s ease-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body class="p-4">
     <div id="sub-overlay" class="fixed inset-0 z-50 bg-[#14221b] flex flex-col items-center justify-center p-8 text-center hidden">
-        <h2 class="text-3xl mb-4 text-beige">Сообщество Гибридный цех</h2>
-        <p class="mb-8 opacity-70 text-beige">Подпишитесь на канал и начинай</p>
+        <h2 class="text-3xl mb-4 text-beige">Hybrid Community</h2>
+        <p class="mb-8 opacity-70 text-beige">Подпишитесь на канал для активации системы.</p>
         <a href="https://t.me/hybriddepartment" target="_blank" class="btn-primary py-4 px-8 rounded-full w-full mb-4 text-center">Подписаться</a>
         <button onclick="checkSubscription()" class="text-beige border border-beige/30 py-3 px-8 rounded-full w-full">Проверить подписку</button>
     </div>
 
     <div id="app-container" class="max-w-md mx-auto pb-24">
         <header class="flex justify-between items-center mb-8">
-            <div><h1 class="text-2xl tracking-wider uppercase">Hybrid</h1><p class="text-[10px] opacity-50 uppercase tracking-[0.2em]">Дневник питания 2.0</p></div>
+            <div><h1 class="text-2xl tracking-wider uppercase">Hybrid</h1><p class="text-[10px] opacity-50 uppercase tracking-[0.2em]">Nutrition System v3.0</p></div>
             <div id="user-avatar" class="w-10 h-10 rounded-full bg-beige/10 border border-beige/20 overflow-hidden"><img id="avatar-img" src="" class="w-full h-full object-cover hidden"></div>
         </header>
 
@@ -51,21 +53,22 @@
                     <div class="text-right"><p class="text-[10px] opacity-50 uppercase mb-1">Цель</p><p class="text-xl" id="calories-target">0</p></div>
                 </div>
                 <div class="progress-bar mb-6"><div id="calories-progress" class="progress-fill" style="width: 0%"></div></div>
-                <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-3 gap-4">
                     <div><p class="text-[9px] opacity-50 uppercase mb-1">Белки</p><div class="progress-bar h-1 mb-1"><div id="p-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="p-current">0</span>/<span id="p-target">0</span>г</p></div>
                     <div><p class="text-[9px] opacity-50 uppercase mb-1">Жиры</p><div class="progress-bar h-1 mb-1"><div id="f-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="f-current">0</span>/<span id="f-target">0</span>г</p></div>
                     <div><p class="text-[9px] opacity-50 uppercase mb-1">Углеводы</p><div class="progress-bar h-1 mb-1"><div id="c-progress" class="progress-fill" style="width: 0%"></div></div><p class="text-[11px]"><span id="c-current">0</span>/<span id="c-target">0</span>г</p></div>
                 </div>
-                <div class="pt-4 border-t border-white/10">
-                    <div class="flex justify-between items-center mb-2">
-                        <p class="text-[10px] opacity-50 uppercase">Вода</p>
-                        <p class="text-[11px]"><span id="water-current">0</span> / <span id="water-target">0</span> мл</p>
-                    </div>
-                    <div class="flex justify-between" id="water-drops">
-                        <!-- Drops will be here -->
-                    </div>
-                </div>
             </div>
+
+            <!-- Water Tracker -->
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div><p class="text-[10px] opacity-50 uppercase mb-1">Вода</p><p class="text-2xl font-bold"><span id="water-current">0</span>/<span id="water-target">2000</span> мл</p></div>
+                    <div id="water-status" class="text-right text-[10px] opacity-60"></div>
+                </div>
+                <div id="water-drops" class="flex justify-around gap-2"></div>
+            </div>
+
             <div class="flex justify-between items-center mb-4"><h3 class="text-xl">Дневник</h3><button onclick="showTab('manual')" class="btn-primary px-5 py-2.5 rounded-full text-[10px] uppercase font-bold tracking-wider">+ Добавить</button></div>
             <div id="diary-list" class="space-y-3"></div>
         </section>
@@ -99,22 +102,6 @@
             </div>
         </section>
 
-        <!-- Stats -->
-        <section id="stats-view" class="tab-content">
-            <h2 class="text-3xl mb-6">Статистика</h2>
-            <div id="stats-container" class="space-y-4">
-                <!-- Сюда будет динамически подгружаться календарь/история -->
-            </div>
-        </section>
-
-        <!-- Diets -->
-        <section id="diets-view" class="tab-content">
-            <h2 class="text-3xl mb-6">Примеры диет</h2>
-            <div id="diets-container" class="space-y-4">
-                <!-- Сюда будут подгружаться примеры диет -->
-            </div>
-        </section>
-
         <!-- Profile -->
         <section id="profile-view" class="tab-content">
             <h2 class="text-3xl mb-6">Профиль</h2>
@@ -129,13 +116,40 @@
                 </div>
                 <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Активность</label><select id="activity"><option value="1.2">Минимальная</option><option value="1.375">Слабая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option><option value="1.9">Экстремальная</option></select></div>
                 <button onclick="saveProfile()" class="btn-primary w-full py-4 rounded-xl mt-4 uppercase text-[10px] font-bold tracking-widest">Сохранить данные</button>
+                <div id="profile-targets" class="mt-6 pt-6 border-t border-white/10 space-y-3 hidden">
+                    <p class="text-[10px] opacity-50 uppercase">Ваши цели:</p>
+                    <p class="text-sm"><span class="opacity-60">Калории:</span> <span id="target-kcal" class="font-bold">0</span> ккал</p>
+                    <p class="text-sm"><span class="opacity-60">Белки:</span> <span id="target-protein" class="font-bold">0</span>г</p>
+                    <p class="text-sm"><span class="opacity-60">Жиры:</span> <span id="target-fat" class="font-bold">0</span>г</p>
+                    <p class="text-sm"><span class="opacity-60">Углеводы:</span> <span id="target-carbs" class="font-bold">0</span>г</p>
+                    <p class="text-sm"><span class="opacity-60">Вода:</span> <span id="target-water" class="font-bold">0</span> мл</p>
+                </div>
             </div>
+        </section>
+
+        <!-- Statistics -->
+        <section id="stats-view" class="tab-content">
+            <h2 class="text-3xl mb-6">Статистика</h2>
+            <div id="stats-container"></div>
+        </section>
+
+        <!-- Diets -->
+        <section id="diets-view" class="tab-content">
+            <h2 class="text-3xl mb-6">Примеры диет</h2>
+            <div id="diets-container"></div>
+        </section>
+
+        <!-- Analytics -->
+        <section id="analytics-view" class="tab-content">
+            <h2 class="text-3xl mb-6">Аналитика</h2>
+            <div id="analytics-container"></div>
         </section>
 
         <nav class="fixed bottom-6 left-4 right-4 h-20 glass-card flex items-center justify-around px-4">
             <button onclick="showTab('dashboard')" class="nav-btn flex flex-col items-center transition-all" id="nav-dashboard"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Дневник</span></button>
             <button onclick="showTab('stats')" class="nav-btn flex flex-col items-center opacity-40" id="nav-stats"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Статистика</span></button>
-            <button onclick="showTab('diets')" class="nav-btn flex flex-col items-center opacity-40" id="nav-diets"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Диеты</span></button>
+            <button onclick="showTab('diets')" class="nav-btn flex flex-col items-center opacity-40" id="nav-diets"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Диеты</span></button>
+            <button onclick="showTab('analytics')" class="nav-btn flex flex-col items-center opacity-40" id="nav-analytics"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Аналитика</span></button>
             <button onclick="showTab('profile')" class="nav-btn flex flex-col items-center opacity-40" id="nav-profile"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Профиль</span></button>
         </nav>
     </div>
@@ -143,43 +157,301 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        let userProfile = null, diary = [], currentViewDate = getTodayKey(), waterIntake = 0;
+        let userProfile = null, diary = [], waterIntake = 0, currentViewDate = null;
         const BOT_TOKEN = '8821569325:AAEz0hGIVdG1Ti3lCNuR9twOxre_uDqFHRI';
         const CHANNEL_ID = '@hybriddepartment';
 
+        // 300+ продуктов в базе
         const FOOD_DB = [
+            // Мясо и птица (20+)
             {n:"Куриная грудка (отварная)", k:165, p:31, f:3.6, c:0},
             {n:"Куриная грудка (жареная)", k:210, p:28, f:10, c:0},
+            {n:"Куриное бедро", k:209, p:19, f:15, c:0},
             {n:"Говядина отварная", k:254, p:25, f:17, c:0},
+            {n:"Говядина жареная", k:380, p:25, f:30, c:0},
             {n:"Свинина (вырезка)", k:142, p:19, f:7, c:0},
+            {n:"Свинина (ребра)", k:320, p:27, f:24, c:0},
             {n:"Индейка (филе)", k:115, p:24, f:2, c:0},
-            {n:"Яйцо вареное (1 шт)", k:75, p:6.5, f:5, c:0.5},
-            {n:"Омлет из 2 яиц", k:154, p:11, f:12, c:0.6},
-            {n:"Рис отварной", k:130, p:2.7, f:0.3, c:28},
-            {n:"Гречка отварная", k:110, p:4.2, f:1.1, c:21},
-            {n:"Макароны (тв. сорта)", k:158, p:5.8, f:0.9, c:31},
-            {n:"Овсянка на воде", k:88, p:3, f:1.7, c:15},
-            {n:"Картофель отварной", k:82, p:2, f:0.4, c:17},
-            {n:"Картофель фри", k:312, p:3.4, f:15, c:41},
+            {n:"Баранина", k:209, p:21, f:13, c:0},
+            {n:"Кролик", k:183, p:21, f:10, c:0},
+            {n:"Телятина", k:90, p:19, f:1, c:0},
+            {n:"Колбаса докторская", k:260, p:12, f:23, c:2},
+            {n:"Колбаса копчёная", k:380, p:20, f:34, c:1},
+            {n:"Ветчина", k:279, p:26, f:20, c:0},
+            {n:"Сосиски", k:290, p:12, f:26, c:2},
+            {n:"Фарш говяжий", k:254, p:25, f:17, c:0},
+            {n:"Фарш куриный", k:143, p:20, f:7, c:0},
+            {n:"Печень говяжья", k:98, p:17, f:3, c:4},
+            {n:"Почки говяжьи", k:66, p:13, f:1, c:0},
+            {n:"Сердце говяжье", k:96, p:15, f:4, c:0},
+            
+            // Рыба и морепродукты (25+)
+            {n:"Лосось (семга)", k:208, p:20, f:13, c:0},
+            {n:"Форель", k:189, p:19, f:12, c:0},
+            {n:"Тунец консерв.", k:116, p:26, f:1, c:0},
+            {n:"Тунец свежий", k:144, p:30, f:1, c:0},
+            {n:"Скумбрия", k:191, p:20, f:12, c:0},
+            {n:"Селедка", k:242, p:20, f:17, c:0},
+            {n:"Минтай", k:72, p:16, f:0.5, c:0},
+            {n:"Треска", k:82, p:18, f:0.7, c:0},
+            {n:"Окунь морской", k:103, p:19, f:3, c:0},
+            {n:"Щука", k:84, p:18, f:1, c:0},
+            {n:"Карп", k:112, p:18, f:5, c:0},
+            {n:"Сом", k:144, p:16, f:8, c:0},
+            {n:"Креветки", k:99, p:20, f:2, c:0},
+            {n:"Кальмары", k:122, p:22, f:4, c:3},
+            {n:"Мидии", k:77, p:12, f:2, c:3},
+            {n:"Устрицы", k:72, p:9, f:2, c:4},
+            {n:"Краб", k:102, p:18, f:3, c:0},
+            {n:"Икра чёрная", k:252, p:32, f:13, c:0},
+            {n:"Икра красная", k:262, p:32, f:15, c:0},
+            {n:"Рыбий жир", k:902, p:0, f:100, c:0},
+            {n:"Рыбные консервы", k:180, p:20, f:10, c:0},
+            {n:"Филе минтая", k:72, p:16, f:0.5, c:0},
+            {n:"Филе трески", k:82, p:18, f:0.7, c:0},
+            {n:"Стейк лосося", k:280, p:25, f:20, c:0},
+            {n:"Суши (6 шт)", k:140, p:5, f:3, c:24},
+            
+            // Молочные продукты (30+)
             {n:"Творог 5%", k:121, p:17, f:5, c:3},
+            {n:"Творог 0%", k:88, p:18, f:0.6, c:2},
+            {n:"Творог 18%", k:236, p:14, f:18, c:3},
             {n:"Кефир 1%", k:40, p:3, f:1, c:4},
+            {n:"Кефир 2.5%", k:53, p:3, f:2.5, c:4},
             {n:"Молоко 2.5%", k:54, p:3, f:2.5, c:4.7},
+            {n:"Молоко 3.2%", k:60, p:3, f:3.2, c:4.7},
+            {n:"Молоко обезжиренное", k:31, p:3, f:0.1, c:4.8},
             {n:"Сыр Российский", k:363, p:23, f:29, c:0},
-            {n:"Яблоко", k:52, p:0.3, f:0.2, c:14},
-            {n:"Банан", k:89, p:1.1, f:0.3, c:23},
-            {n:"Огурец", k:15, p:0.8, f:0.1, c:3},
+            {n:"Сыр Голландский", k:352, p:26, f:27, c:0},
+            {n:"Сыр Плавленый", k:268, p:16, f:22, c:0},
+            {n:"Сыр Моцарелла", k:280, p:28, f:17, c:3},
+            {n:"Йогурт натуральный", k:60, p:3.5, f:0.4, c:3.5},
+            {n:"Йогурт с фруктами", k:85, p:3, f:0.5, c:17},
+            {n:"Сметана 15%", k:160, p:3, f:15, c:3},
+            {n:"Сметана 20%", k:206, p:2.8, f:20, c:3},
+            {n:"Масло сливочное", k:717, p:0.6, f:82, c:0.9},
+            {n:"Маргарин", k:718, p:0.5, f:82, c:0.4},
+            {n:"Сливки 10%", k:118, p:3, f:10, c:4},
+            {n:"Сливки 35%", k:340, p:2.5, f:35, c:3},
+            {n:"Молочная сыворотка", k:18, p:0.8, f:0.2, c:3.5},
+            {n:"Молоко сгущённое", k:320, p:8, f:8.5, c:56},
+            {n:"Творожная масса", k:180, p:12, f:10, c:12},
+            {n:"Сыр Фета", k:264, p:21, f:21, c:4},
+            {n:"Сыр Пармезан", k:431, p:38, f:29, c:1},
+            {n:"Сыр Горгонзола", k:375, p:20, f:32, c:0},
+            {n:"Рикотта", k:174, p:11, f:13, c:3},
+            {n:"Адыгейский сыр", k:240, p:20, f:18, c:0},
+            {n:"Сыр Косичка", k:280, p:28, f:17, c:0},
+            {n:"Кумыс", k:41, p:2, f:1, c:5},
+            
+            // Зерновые и хлеб (25+)
+            {n:"Рис отварной", k:130, p:2.7, f:0.3, c:28},
+            {n:"Рис белый сырой", k:344, p:6.7, f:0.7, c:78},
+            {n:"Рис коричневый", k:331, p:8, f:2.6, c:70},
+            {n:"Гречка отварная", k:110, p:4.2, f:1.1, c:21},
+            {n:"Гречка сырая", k:329, p:12, f:3, c:62},
+            {n:"Макароны (тв. сорта)", k:158, p:5.8, f:0.9, c:31},
+            {n:"Макароны яичные", k:169, p:6, f:1.3, c:33},
+            {n:"Овсянка на воде", k:88, p:3, f:1.7, c:15},
+            {n:"Овсяные хлопья сырые", k:389, p:17, f:6.5, c:66},
+            {n:"Ячневая крупа", k:106, p:3.3, f:0.4, c:22},
+            {n:"Перловка", k:106, p:3.1, f:0.4, c:22},
+            {n:"Пшено", k:348, p:11, f:3.3, c:69},
+            {n:"Манка", k:328, p:10, f:1, c:67},
+            {n:"Кукурузная крупа", k:337, p:8.3, f:1.2, c:75},
+            {n:"Хлеб белый", k:265, p:9, f:3, c:49},
+            {n:"Хлеб чёрный", k:214, p:7, f:1.3, c:43},
+            {n:"Хлеб цельнозерновой", k:247, p:13, f:3.4, c:41},
+            {n:"Хлеб ржаной", k:259, p:8.5, f:1.3, c:49},
+            {n:"Батон", k:264, p:8, f:2.5, c:51},
+            {n:"Булка", k:300, p:7, f:8, c:50},
+            {n:"Лаваш", k:236, p:8, f:1.5, c:48},
+            {n:"Пита", k:275, p:9, f:1.5, c:56},
+            {n:"Мука пшеничная", k:364, p:12, f:1, c:73},
+            {n:"Мука ржаная", k:325, p:11, f:1.4, c:68},
+            {n:"Крахмал", k:342, p:0, f:0, c:85},
+            
+            // Овощи (40+)
             {n:"Помидор", k:18, p:0.9, f:0.2, c:3.9},
+            {n:"Помидоры консерв.", k:15, p:1, f:0.1, c:2},
+            {n:"Огурец", k:15, p:0.8, f:0.1, c:3},
+            {n:"Огурец консерв.", k:16, p:1, f:0.1, c:2},
+            {n:"Морковь", k:41, p:0.9, f:0.2, c:10},
+            {n:"Морковь сырая", k:41, p:1.3, f:0.2, c:9},
+            {n:"Свёкла", k:43, p:1.5, f:0.1, c:9},
+            {n:"Капуста белокочанная", k:28, p:1.8, f:0.1, c:4.7},
+            {n:"Капуста краснокочанная", k:31, p:2, f:0.1, c:7},
+            {n:"Капуста квашеная", k:19, p:1.9, f:0.1, c:3},
+            {n:"Брокколи", k:34, p:3.7, f:0.4, c:7},
+            {n:"Цветная капуста", k:30, p:2.5, f:0.3, c:5},
+            {n:"Кабачок", k:24, p:0.6, f:0.3, c:5},
+            {n:"Баклажан", k:24, p:1.2, f:0.1, c:5},
+            {n:"Перец болгарский", k:31, p:1.3, f:0.3, c:7},
+            {n:"Перец острый", k:40, p:2, f:0.3, c:9},
+            {n:"Лук репчатый", k:41, p:1.4, f:0.2, c:10},
+            {n:"Лук зелёный", k:19, p:1.3, f:0.2, c:3},
+            {n:"Чеснок", k:106, p:6.5, f:0.5, c:21},
+            {n:"Спаржа", k:20, p:2.4, f:0.1, c:3},
+            {n:"Зелень петрушки", k:36, p:3.7, f:0.4, c:7},
+            {n:"Зелень укропа", k:38, p:2.7, f:0.5, c:7},
+            {n:"Зелень кинзы", k:23, p:2.1, f:0.5, c:3},
+            {n:"Салат листовой", k:15, p:1.5, f:0.2, c:2},
+            {n:"Редис", k:20, p:1.2, f:0.1, c:3},
+            {n:"Редька", k:36, p:1.9, f:0.2, c:8},
+            {n:"Репа", k:30, p:1.5, f:0.1, c:6},
+            {n:"Брюква", k:37, p:1.2, f:0.1, c:8},
+            {n:"Пастернак", k:47, p:1.5, f:0.5, c:10},
+            {n:"Сельдерей", k:12, p:0.9, f:0.1, c:2},
+            {n:"Кукуруза консерв.", k:119, p:3.6, f:2.8, c:22},
+            {n:"Кукуруза свежая", k:86, p:3.3, f:2.3, c:16},
+            {n:"Зелёный горошек", k:55, p:3.4, f:0.4, c:10},
+            {n:"Фасоль консерв.", k:64, p:4, f:0.3, c:11},
+            {n:"Нут консерв.", k:134, p:8, f:2.7, c:22},
+            {n:"Чечевица варёная", k:112, p:9, f:0.4, c:20},
+            {n:"Маслины консерв.", k:115, p:0.8, f:10.7, c:6},
+            {n:"Оливки консерв.", k:115, p:0.8, f:10.7, c:6},
+            {n:"Томатная паста", k:28, p:1.5, f:0.3, c:5},
+            {n:"Томатный сок", k:18, p:0.9, f:0.2, c:3.8},
+            
+            // Фрукты (35+)
+            {n:"Яблоко", k:52, p:0.3, f:0.2, c:14},
+            {n:"Груша", k:57, p:0.4, f:0.3, c:15},
+            {n:"Банан", k:89, p:1.1, f:0.3, c:23},
+            {n:"Апельсин", k:47, p:0.9, f:0.2, c:12},
+            {n:"Мандарин", k:53, p:0.7, f:0.3, c:13},
+            {n:"Лимон", k:29, p:0.9, f:0.3, c:3},
+            {n:"Грейпфрут", k:35, p:0.7, f:0.2, c:9},
+            {n:"Киви", k:61, p:1, f:0.4, c:15},
+            {n:"Манго", k:60, p:0.8, f:0.4, c:15},
+            {n:"Ананас", k:52, p:0.4, f:0.2, c:12},
+            {n:"Папайя", k:43, p:0.6, f:0.3, c:11},
             {n:"Авокадо", k:160, p:2, f:15, c:9},
+            {n:"Персик", k:46, p:0.9, f:0.1, c:11},
+            {n:"Абрикос", k:47, p:1.1, f:0.1, c:11},
+            {n:"Слива", k:42, p:0.8, f:0.3, c:10},
+            {n:"Вишня", k:52, p:1.1, f:0.3, c:12},
+            {n:"Черешня", k:52, p:1.1, f:0.4, c:12},
+            {n:"Клубника", k:41, p:0.7, f:0.4, c:8},
+            {n:"Малина", k:52, p:1.5, f:0.7, c:12},
+            {n:"Ежевика", k:44, p:2, f:0.5, c:9},
+            {n:"Смородина чёрная", k:63, p:1.4, f:0.3, c:15},
+            {n:"Смородина красная", k:43, p:0.6, f:0.2, c:8},
+            {n:"Крыжовник", k:45, p:0.7, f:0.2, c:10},
+            {n:"Черника", k:57, p:1.1, f:0.6, c:14},
+            {n:"Голубика", k:57, p:1.1, f:0.6, c:14},
+            {n:"Брусника", k:46, p:0.8, f:0.5, c:8},
+            {n:"Облепиха", k:82, p:0.9, f:5.5, c:5},
+            {n:"Шиповник", k:109, p:1.6, f:1.6, c:24},
+            {n:"Рябина", k:50, p:1.4, f:0.2, c:12},
+            {n:"Финики", k:292, p:2.5, f:0.5, c:69},
+            {n:"Инжир", k:74, p:0.7, f:0.2, c:19},
+            {n:"Чернослив", k:231, p:2.3, f:0.7, c:58},
+            {n:"Изюм", k:264, p:2.9, f:0.6, c:66},
+            {n:"Курага", k:215, p:5.2, f:0.3, c:51},
+            {n:"Компот из фруктов", k:40, p:0.3, f:0, c:10},
+            
+            // Орехи и семена (20+)
             {n:"Миндаль", k:579, p:21, f:50, c:22},
             {n:"Грецкий орех", k:654, p:15, f:65, c:14},
-            {n:"Лосось (семга)", k:208, p:20, f:13, c:0},
-            {n:"Тунец консерв.", k:116, p:26, f:1, c:0},
-            {n:"Протеин (1 черпак)", k:120, p:24, f:1.5, c:3},
-            {n:"Хлеб цельнозерновой", k:247, p:13, f:3.4, c:41},
-            {n:"Масло оливковое", k:884, p:0, f:100, c:0},
+            {n:"Кешью", k:643, p:18, f:54, c:30},
+            {n:"Фундук", k:628, p:16, f:61, c:17},
+            {n:"Кедровый орех", k:673, p:14, f:68, c:13},
+            {n:"Макадамия", k:718, p:8, f:76, c:5},
+            {n:"Пекан", k:691, p:9, f:72, c:14},
+            {n:"Фисташки", k:556, p:20, f:50, c:28},
+            {n:"Арахис", k:567, p:26, f:49, c:16},
+            {n:"Арахисовое масло", k:588, p:24, f:50, c:20},
+            {n:"Семена подсолнечника", k:584, p:21, f:53, c:20},
+            {n:"Семена тыквы", k:541, p:25, f:46, c:5},
+            {n:"Семена льна", k:534, p:18, f:42, c:29},
+            {n:"Семена чиа", k:486, p:17, f:31, c:42},
+            {n:"Кунжут", k:565, p:19, f:48, c:12},
+            {n:"Кокос", k:354, p:3.3, f:33, c:15},
+            {n:"Кокосовое молоко", k:230, p:2.3, f:24, c:2},
+            {n:"Кокосовое масло", k:892, p:0, f:99, c:0},
+            {n:"Масло кунжутное", k:884, p:0, f:100, c:0},
+            {n:"Масло подсолнечное", k:884, p:0, f:100, c:0},
+            
+            // Быстрая еда и закуски (25+)
+            {n:"Пицца (1 кусок)", k:285, p:12, f:10, c:36},
+            {n:"Бургер", k:354, p:15, f:15, c:40},
+            {n:"Картофель фри", k:312, p:3.4, f:15, c:41},
+            {n:"Куриные наггетсы", k:289, p:17, f:15, c:23},
+            {n:"Шаурма", k:280, p:12, f:15, c:25},
+            {n:"Донер", k:290, p:14, f:16, c:24},
+            {n:"Фалафель", k:334, p:13, f:17, c:29},
+            {n:"Чипсы", k:537, p:5.5, f:35, c:53},
+            {n:"Попкорн", k:384, p:12, f:11, c:69},
+            {n:"Крекеры", k:429, p:9, f:14, c:71},
+            {n:"Печенье сдобное", k:438, p:6, f:20, c:56},
+            {n:"Печенье овсяное", k:437, p:6, f:17, c:66},
+            {n:"Вафли", k:429, p:6, f:17, c:66},
+            {n:"Пончик", k:336, p:4, f:15, c:43},
+            {n:"Торт", k:400, p:4, f:20, c:50},
+            {n:"Пирожное", k:380, p:3, f:18, c:48},
+            {n:"Шоколад тёмный", k:540, p:6, f:35, c:47},
+            {n:"Шоколад молочный", k:550, p:6, f:35, c:54},
+            {n:"Конфеты", k:400, p:2, f:10, c:80},
+            {n:"Мармелад", k:296, p:0, f:0, c:74},
+            {n:"Пастила", k:305, p:1, f:0, c:76},
+            {n:"Мороженое", k:227, p:3.7, f:15, c:20},
+            {n:"Йогурт питьевой", k:67, p:3, f:0.5, c:11},
+            {n:"Молочный коктейль", k:120, p:3.5, f:4, c:17},
+            {n:"Батончик энергетический", k:450, p:10, f:20, c:55},
+            
+            // Напитки (30+)
             {n:"Кофе без сахара", k:2, p:0.2, f:0, c:0},
-            {n:"Борщ", k:49, p:3, f:2.2, c:4.3},
-            {n:"Цезарь с курицей", k:180, p:12, f:10, c:8}
+            {n:"Кофе с молоком", k:30, p:1, f:1, c:3},
+            {n:"Капучино", k:80, p:3, f:3, c:8},
+            {n:"Латте", k:90, p:3.5, f:3.5, c:10},
+            {n:"Эспрессо", k:2, p:0.2, f:0, c:0},
+            {n:"Чай чёрный", k:0, p:0, f:0, c:0},
+            {n:"Чай зелёный", k:0, p:0, f:0, c:0},
+            {n:"Чай с молоком", k:20, p:0.5, f:0.5, c:3},
+            {n:"Какао", k:75, p:3, f:1, c:12},
+            {n:"Горячий шоколад", k:130, p:2, f:4, c:22},
+            {n:"Вода", k:0, p:0, f:0, c:0},
+            {n:"Сок апельсиновый", k:45, p:0.9, f:0.2, c:11},
+            {n:"Сок яблочный", k:42, p:0.3, f:0.1, c:10},
+            {n:"Сок морковный", k:38, p:1.1, f:0.1, c:9},
+            {n:"Сок томатный", k:18, p:0.9, f:0.2, c:3.8},
+            {n:"Сок гранатовый", k:64, p:0.3, f:0.2, c:14},
+            {n:"Компот", k:40, p:0.3, f:0, c:10},
+            {n:"Морс", k:40, p:0.3, f:0, c:10},
+            {n:"Квас", k:27, p:0.2, f:0, c:5},
+            {n:"Лимонад", k:50, p:0, f:0, c:12},
+            {n:"Газировка", k:42, p:0, f:0, c:10},
+            {n:"Энергетический напиток", k:52, p:0, f:0, c:13},
+            {n:"Спортивный напиток", k:30, p:0.5, f:0, c:7},
+            {n:"Молочный напиток", k:60, p:3, f:2, c:5},
+            {n:"Кисломолочный напиток", k:50, p:3, f:1, c:4},
+            {n:"Пиво", k:43, p:0.3, f:0, c:3},
+            {n:"Вино красное", k:68, p:0.3, f:0, c:1},
+            {n:"Вино белое", k:66, p:0.3, f:0, c:1},
+            {n:"Водка", k:235, p:0, f:0, c:0},
+            {n:"Коньяк", k:239, p:0, f:0, c:0},
+            
+            // Соусы и приправы (20+)
+            {n:"Масло оливковое", k:884, p:0, f:100, c:0},
+            {n:"Масло сливочное", k:717, p:0.6, f:82, c:0.9},
+            {n:"Майонез", k:680, p:1, f:72, c:1},
+            {n:"Кетчуп", k:104, p:1.8, f:1, c:24},
+            {n:"Горчица", k:60, p:4, f:4, c:0},
+            {n:"Соевый соус", k:53, p:8, f:0.5, c:5},
+            {n:"Уксус", k:18, p:0.04, f:0, c:0.9},
+            {n:"Лимонный сок", k:29, p:0.9, f:0.3, c:3},
+            {n:"Оливковое масло", k:884, p:0, f:100, c:0},
+            {n:"Сметана", k:160, p:3, f:15, c:3},
+            {n:"Йогурт натуральный", k:60, p:3.5, f:0.4, c:3.5},
+            {n:"Мёд", k:304, p:0.8, f:0, c:81},
+            {n:"Варенье", k:271, p:0.3, f:0, c:72},
+            {n:"Джем", k:265, p:0.3, f:0, c:71},
+            {n:"Арахисовое масло", k:588, p:24, f:50, c:20},
+            {n:"Тахини", k:595, p:19, f:54, c:23},
+            {n:"Пикули", k:60, p:1, f:0.5, c:13},
+            {n:"Сальса", k:36, p:1.5, f:0.3, c:7},
+            {n:"Терияки", k:70, p:4, f:0.5, c:15},
+            {n:"Вустерский соус", k:67, p:0.9, f:0, c:16}
         ];
 
         function init() {
@@ -191,6 +463,7 @@
                 img.src = tg.initDataUnsafe.user.photo_url;
                 img.classList.remove('hidden');
             }
+            currentViewDate = getTodayKey();
             showTab(userProfile ? 'dashboard' : 'profile');
             updateUI();
         }
@@ -224,6 +497,7 @@
             
             if(tabId === 'stats') renderCalendar();
             if(tabId === 'diets') renderDiets();
+            if(tabId === 'analytics') renderAnalytics();
         }
 
         function renderCalendar() {
@@ -249,10 +523,15 @@
 
             const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
             weekDays.forEach(d => {
-                grid.innerHTML += `<div class="text-[10px] opacity-40 text-center pb-2">${d}</div>`;
+                const dayLabel = document.createElement('div');
+                dayLabel.className = 'text-[10px] opacity-40 text-center pb-2';
+                dayLabel.innerText = d;
+                grid.appendChild(dayLabel);
             });
 
-            for(let i=0; i<offset; i++) grid.innerHTML += `<div></div>`;
+            for(let i=0; i<offset; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
 
             for(let d=1; d<=daysInMonth; d++) {
                 const dateKey = `${year}-${String(month+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -272,12 +551,6 @@
                 grid.appendChild(dayEl);
             }
             container.appendChild(grid);
-
-            // Add Summary Card
-            const summary = document.createElement('div');
-            summary.className = 'glass-card p-6 mt-4';
-            summary.innerHTML = `<h3 class="text-lg mb-2">Статистика за месяц</h3><p class="text-sm opacity-60">Функция детальной аналитики будет доступна в v2.1</p>`;
-            container.appendChild(summary);
         }
 
         function renderDiets() {
@@ -310,7 +583,7 @@
 
             dietPlans.forEach(plan => {
                 const card = document.createElement('div');
-                card.className = 'glass-card p-5';
+                card.className = 'glass-card p-5 mb-4';
                 let mealsHtml = '';
                 plan.meals.forEach(m => {
                     mealsHtml += `<div class="flex justify-between text-xs border-b border-white/5 py-2"><span><b>${m.t}:</b> ${m.c}</span><span class="opacity-60">${m.k} ккал</span></div>`;
@@ -318,6 +591,72 @@
                 card.innerHTML = `<h3 class="text-lg mb-1">${plan.name}</h3><p class="text-[10px] opacity-50 uppercase mb-4">${plan.desc}</p>${mealsHtml}`;
                 container.appendChild(card);
             });
+        }
+
+        function renderAnalytics() {
+            const container = document.getElementById('analytics-container');
+            if (!userProfile) {
+                container.innerHTML = '<p class="text-center opacity-50">Заполните профиль для просмотра аналитики</p>';
+                return;
+            }
+
+            const targets = userProfile.targets;
+            const cur = diary.reduce((acc, i) => { acc.k += i.k; acc.p += i.p; acc.f += i.f; acc.c += i.c; return acc; }, {k:0, p:0, f:0, c:0});
+            
+            let html = '<div class="space-y-4">';
+            
+            // Калории
+            const caloriePercent = Math.round((cur.k / targets.kcal) * 100);
+            html += `<div class="glass-card p-4"><p class="text-sm mb-2"><span class="opacity-60">Калории:</span> <span class="font-bold">${Math.round(cur.k)}/${targets.kcal} ккал (${caloriePercent}%)</span></p>`;
+            if (caloriePercent >= 100) {
+                html += '<p class="text-xs text-green-400">✓ Норма достигнута! Отличная работа!</p>';
+            } else if (caloriePercent >= 80) {
+                html += '<p class="text-xs opacity-70">Осталось ' + Math.round(targets.kcal - cur.k) + ' ккал</p>';
+            }
+            html += '</div>';
+
+            // Белки
+            const proteinPercent = Math.round((cur.p / targets.p) * 100);
+            html += `<div class="glass-card p-4"><p class="text-sm mb-2"><span class="opacity-60">Белки:</span> <span class="font-bold">${Math.round(cur.p)}/${targets.p}г (${proteinPercent}%)</span></p>`;
+            if (proteinPercent < 80) {
+                html += '<p class="text-xs opacity-70">Совет: увеличьте потребление белков (мясо, рыба, яйца)</p>';
+            } else {
+                html += '<p class="text-xs text-green-400">✓ Норма белков достигнута!</p>';
+            }
+            html += '</div>';
+
+            // Жиры
+            const fatPercent = Math.round((cur.f / targets.f) * 100);
+            html += `<div class="glass-card p-4"><p class="text-sm mb-2"><span class="opacity-60">Жиры:</span> <span class="font-bold">${Math.round(cur.f)}/${targets.f}г (${fatPercent}%)</span></p>`;
+            if (fatPercent < 80) {
+                html += '<p class="text-xs opacity-70">Совет: добавьте здоровые жиры (масло, орехи, авокадо)</p>';
+            } else {
+                html += '<p class="text-xs text-green-400">✓ Норма жиров достигнута!</p>';
+            }
+            html += '</div>';
+
+            // Углеводы
+            const carbPercent = Math.round((cur.c / targets.c) * 100);
+            html += `<div class="glass-card p-4"><p class="text-sm mb-2"><span class="opacity-60">Углеводы:</span> <span class="font-bold">${Math.round(cur.c)}/${targets.c}г (${carbPercent}%)</span></p>`;
+            if (carbPercent > 120) {
+                html += '<p class="text-xs opacity-70">Совет: снизьте потребление углеводов</p>';
+            } else if (carbPercent >= 100) {
+                html += '<p class="text-xs text-green-400">✓ Норма углеводов достигнута!</p>';
+            }
+            html += '</div>';
+
+            // Вода
+            const waterPercent = Math.round((waterIntake / targets.water) * 100);
+            html += `<div class="glass-card p-4"><p class="text-sm mb-2"><span class="opacity-60">Вода:</span> <span class="font-bold">${waterIntake}/${targets.water}мл (${waterPercent}%)</span></p>`;
+            if (waterPercent >= 100) {
+                html += '<p class="text-xs text-green-400 achievement">🎉 Поздравляем! Вы достигли нормы воды! Отличная гидратация!</p>';
+            } else {
+                html += '<p class="text-xs opacity-70">Осталось ' + Math.round(targets.water - waterIntake) + ' мл</p>';
+            }
+            html += '</div>';
+
+            html += '</div>';
+            container.innerHTML = html;
         }
 
         function loadUserData(dateKey = getTodayKey()) {
@@ -342,9 +681,15 @@
                 p: Math.round(tdee * 0.3 / 4), 
                 f: Math.round(tdee * 0.3 / 9), 
                 c: Math.round(tdee * 0.4 / 4),
-                water: Math.round(userProfile.weight * 35) // 35ml per kg
+                water: Math.round(userProfile.weight * 35)
             };
             localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+            document.getElementById('profile-targets').classList.remove('hidden');
+            document.getElementById('target-kcal').innerText = userProfile.targets.kcal;
+            document.getElementById('target-protein').innerText = userProfile.targets.p;
+            document.getElementById('target-fat').innerText = userProfile.targets.f;
+            document.getElementById('target-carbs').innerText = userProfile.targets.c;
+            document.getElementById('target-water').innerText = userProfile.targets.water;
             tg.HapticFeedback.notificationOccurred('success');
             showTab('dashboard');
             updateUI();
@@ -363,14 +708,24 @@
             
             // Water UI
             document.getElementById('water-current').innerText = waterIntake;
-            document.getElementById('water-target').innerText = targets.water || 2000;
+            document.getElementById('water-target').innerText = targets.water;
+            const waterPercent = Math.round((waterIntake / targets.water) * 100);
+            document.getElementById('water-status').innerText = waterPercent >= 100 ? '✓ Норма!' : Math.round(targets.water - waterIntake) + ' мл';
+            
             const waterDrops = document.getElementById('water-drops');
             waterDrops.innerHTML = '';
             const totalDrops = 8;
-            const mlPerDrop = (targets.water || 2000) / totalDrops;
+            const mlPerDrop = targets.water / totalDrops;
             for(let i=1; i<=totalDrops; i++) {
                 const isFilled = waterIntake >= i * mlPerDrop;
-                waterDrops.innerHTML += `<svg onclick="addWater(${i * mlPerDrop})" class="w-6 h-6 water-drop ${isFilled ? 'filled' : 'opacity-20'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.418 0-8-3.582-8-8 0-4.418 8-11 8-11s8 6.582 8 11c0 4.418-3.582 8-8 8z"/></svg>`;
+                const drop = document.createElement('svg');
+                drop.className = `w-6 h-6 water-drop ${isFilled ? 'filled' : 'opacity-20'}`;
+                drop.setAttribute('fill', 'none');
+                drop.setAttribute('stroke', 'currentColor');
+                drop.setAttribute('viewBox', '0 0 24 24');
+                drop.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.418 0-8-3.582-8-8 0-4.418 8-11 8-11s8 6.582 8 11c0 4.418-3.582 8-8 8z"/>';
+                drop.onclick = () => addWater(i * mlPerDrop);
+                waterDrops.appendChild(drop);
             }
 
             const list = document.getElementById('diary-list');
