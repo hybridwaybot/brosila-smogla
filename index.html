@@ -718,13 +718,21 @@
             const mlPerDrop = targets.water / totalDrops;
             for(let i=1; i<=totalDrops; i++) {
                 const isFilled = waterIntake >= i * mlPerDrop;
-                const drop = document.createElement('svg');
-                drop.className = `w-6 h-6 water-drop ${isFilled ? 'filled' : 'opacity-20'}`;
-                drop.style.cursor = 'pointer';
+                const svgNS = "http://www.w3.org/2000/svg";
+                const drop = document.createElementNS(svgNS, 'svg');
+                drop.setAttribute('class', `w-6 h-6 water-drop ${isFilled ? 'filled' : 'opacity-20'}`);
                 drop.setAttribute('fill', 'none');
                 drop.setAttribute('stroke', 'currentColor');
                 drop.setAttribute('viewBox', '0 0 24 24');
-                drop.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.418 0-8-3.582-8-8 0-4.418 8-11 8-11s8 6.582 8 11c0 4.418-3.582 8-8 8z"/>';
+                drop.style.cursor = 'pointer';
+                
+                const path = document.createElementNS(svgNS, 'path');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('d', 'M12 21c-4.418 0-8-3.582-8-8 0-4.418 8-11 8-11s8 6.582 8 11c0 4.418-3.582 8-8 8z');
+                
+                drop.appendChild(path);
                 drop.onclick = () => addWater(i * mlPerDrop);
                 waterDrops.appendChild(drop);
             }
