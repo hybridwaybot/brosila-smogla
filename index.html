@@ -650,42 +650,47 @@
 
         function setShopPeriod(p) { window.shopPeriod = p; renderDiets(); }
 
-        function generateShoppingList() {
-            let plan = window.currentDietPlan;
-            if (!plan || !plan.meals || plan.meals.length !== window.mealsCount) {
-                plan = generatePlan(window.mealsCount);
-                window.currentDietPlan = plan;
+function generateShoppingList() {
+    // 1. Принудительно проверяем, создан ли план, если нет — создаем его на лету
+    if (!window.currentDietPlan || window.currentDietPlan.meals.length !== window.mealsCount) {
+        renderDiets();
+    }
+    
+    const plan = window.currentDietPlan;
+    if (!plan || !plan.meals) {
+        tg.showAlert("Ошибка: План питания не найден.");
+        return;
+    }
+    
+    const mult = window.shopPeriod === 'week' ? 7 : 1;
+    let items = {};
+    
+    plan.meals.forEach(m => {
+        const r = RECIPES[m.c];
+        if (r && r.i) {
+            for (let ing in r.i) {
+                items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
             }
-            
-            const mult = window.shopPeriod === 'week' ? 7 : 1;
-            let items = {};
-            
-            plan.meals.forEach(m => {
-                const r = RECIPES[m.c];
-                if (r && r.i) {
-                    for (let ing in r.i) {
-                        items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
-                    }
-                }
-            });
-            
-            let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):\n\n`;
-            let hasItems = false;
-            const sortedKeys = Object.keys(items).sort();
-            
-            for (let n of sortedKeys) {
-                hasItems = true;
-                let v = items[n], u = "г";
-                if (v >= 1000) { v = (v/1000).toFixed(2); u = "кг"; } else { v = Math.round(v); }
-                str += `• ${n}: ${v}${u}\n`;
-            }
-            
-            if (!hasItems) {
-                tg.showAlert("Не удалось найти ингредиенты для выбранных блюд.");
-                return;
-            }
-            tg.showAlert(str);
         }
+    });
+
+    let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):\n\n`;
+    const sortedKeys = Object.keys(items).sort();
+    
+    if (sortedKeys.length === 0) {
+        tg.showAlert("Список пуст. Проверьте ингредиенты в рецептах.");
+        return;
+    }
+
+    for (let n of sortedKeys) {
+        let v = items[n], u = "г";
+        if (v >= 1000) { v = (v/1000).toFixed(2); u = "кг"; }
+        else { v = Math.round(v); }
+        str += `• ${n}: ${v}${u}\n`;
+    }
+    
+    tg.showAlert(str);
+}
 
         function openRecipeModal(name) {
             const recipe = RECIPES[name];
