@@ -731,9 +731,9 @@
                 } else if (count == 4) {
                     meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус", c:snacks[0]}, {t:"Ужин", c:dinner[0]}];
                 } else if (count == 5) {
-                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[1]}, {t:"Ужин", c:dinner[0]}];
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[0]}, {t:"Ужин", c:dinner[0]}];
                 } else if (count == 6) {
-                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[1]}, {t:"Ужин", c:dinner[0]}, {t:"Поздний ужин", c:snacks[2]}];
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[0]}, {t:"Ужин", c:dinner[0]}, {t:"Поздний ужин", c:snacks[0]}];
                 }
                 return { name: `Профессиональный план (${count} приемов)`, meals: meals };
             };
@@ -808,10 +808,29 @@
 
         function generateShoppingList() {
             // Принудительно берем актуальный план из текущего состояния
-            const plan = window.currentDietPlan;
-            if (!plan || !plan.meals || plan.meals.length === 0) {
-                tg.showAlert("Ошибка: План питания не сформирован. Попробуйте переключить количество приемов пищи.");
-                return;
+            let plan = window.currentDietPlan;
+            
+            // Если план не совпадает с выбранным количеством приемов, пересоздаем его
+            if (!plan || !plan.meals || plan.meals.length !== window.mealsCount) {
+                const targetKcal = userProfile?.targets?.kcal || 2000;
+                const breakfast = ["Овсяная каша с ягодами и миндалем", "Скрэмбл с авокадо и цельнозерновым тостом", "Творог 5% с грецким орехом и семенами чиа"];
+                const lunch = ["Стейк из индейки с брокколи на пару", "Запеченный минтай с диким рисом", "Куриное филе с киноа и овощами"];
+                const dinner = ["Салат с тунцом и нутом", "Зеленый салат с яйцом пашот", "Стейк из индейки с брокколи на пару"];
+                const snacks = ["Греческий йогурт с семенами льна", "Протеиновый смузи с бананом", "Запеченное яблоко с творогом", "Горсть орехов (миндаль/фундук)"];
+                
+                let meals = [];
+                const count = window.mealsCount;
+                if (count == 3) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Обед", c:lunch[0]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 4) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус", c:snacks[0]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 5) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[0]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 6) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[0]}, {t:"Ужин", c:dinner[0]}, {t:"Поздний ужин", c:snacks[0]}];
+                }
+                plan = { name: `Профессиональный план (${count} приемов)`, meals: meals };
+                window.currentDietPlan = plan;
             }
             
             const mult = window.shopPeriod === 'week' ? 7 : 1;
@@ -823,6 +842,8 @@
                     for (let ing in r.i) {
                         items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
                     }
+                } else {
+                    console.error("Рецепт не найден:", m.c);
                 }
             });
             
