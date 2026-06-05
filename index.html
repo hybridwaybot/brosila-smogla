@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Дневник питания</title>
+    <title>Дневник питания - Гибридный цех</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --color-dark-green: #14221b; --color-beige: #d9d2c5; }
+        :root { --color-dark-green: #14221b; --color-beige: #d9d2c5; --color-gold: #d4af37; }
         body { font-family: 'Inter', sans-serif; background-color: var(--color-dark-green); color: var(--color-beige); margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        
+        /* Стили для Премиум дизайна */
+        body.premium-mode { background: radial-gradient(circle at top, #1a2e24 0%, #0d1511 100%); }
+        .premium-mode .glass-card { background: rgba(212, 175, 55, 0.03); border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .premium-mode .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #f9e498 100%); color: #14221b; }
+        .premium-mode .text-gold { color: var(--color-gold); }
+        .premium-mode .border-gold { border-color: rgba(212, 175, 55, 0.3); }
+        .premium-mode .progress-fill { background: linear-gradient(90deg, #d4af37, #f9e498); }
+
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; }
         .btn-primary { background-color: var(--color-beige); color: var(--color-dark-green); font-weight: 600; transition: all 0.2s ease; }
         .btn-primary:active { transform: scale(0.96); }
@@ -24,20 +33,25 @@
         .water-drop.filled { color: #4a9eff; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
         .calendar-day { padding: 12px 8px; text-align: center; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 0.2s; position: relative; }
-        .calendar-day:hover { background: rgba(255, 255, 255, 0.1); }
-        .calendar-day.has-data::after { content: '●'; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); color: var(--color-beige); font-size: 8px; }
         .calendar-day.active { background: var(--color-beige); color: var(--color-dark-green); font-weight: bold; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+        .premium-mode .calendar-day.active { background: var(--color-gold); color: #14221b; }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
-        .modal-content { background: var(--color-dark-green); border: 1px solid rgba(217, 210, 197, 0.2); border-radius: 20px; padding: 20px; max-width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background: var(--color-dark-green); border: 1px solid rgba(217, 210, 197, 0.2); border-radius: 24px; padding: 24px; max-width: 90%; max-height: 85vh; overflow-y: auto; width: 100%; }
+        .premium-mode .modal-content { border-color: var(--color-gold); }
     </style>
 </head>
 <body class="p-4">
-    <div id="sub-overlay" class="fixed inset-0 z-50 bg-[#14221b] flex flex-col items-center justify-center p-8 text-center hidden">
-        <h2 class="text-3xl mb-4 text-beige">Гибридный цех</h2>
-        <p class="mb-8 opacity-70 text-beige">Подпишитесь на канал для активации системы.</p>
-        <a href="https://t.me/hybriddepartment" target="_blank" class="btn-primary py-4 px-8 rounded-full w-full mb-4 text-center">Подписаться</a>
-        <button onclick="checkSubscription()" class="text-beige border border-beige/30 py-3 px-8 rounded-full w-full">Проверить подписку</button>
+    <!-- Overlay for Subscription -->
+    <div id="sub-overlay" class="fixed inset-0 z-[200] bg-[#14221b] flex flex-col items-center justify-center p-8 text-center hidden">
+        <div class="mb-6 w-20 h-20 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30">
+            <svg class="w-10 h-10 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        </div>
+        <h2 class="text-3xl mb-4 text-beige font-bold">Гибридный цех</h2>
+        <p class="mb-8 opacity-70 text-beige">Для доступа к системе и премиум-функциям необходимо быть подписанным на наш канал.</p>
+        <a href="https://t.me/hybriddepartment" target="_blank" class="btn-primary py-4 px-8 rounded-full w-full mb-4 text-center block">Подписаться на канал</a>
+        <button onclick="checkSubscription(true)" class="text-beige border border-beige/30 py-3 px-8 rounded-full w-full">Я подписался, войти</button>
     </div>
 
     <!-- Recipe Modal -->
@@ -51,16 +65,25 @@
                 <label class="text-[10px] opacity-50 uppercase">Количество порций:</label>
                 <input type="number" id="recipe-portions" value="1" min="1" max="10" oninput="updateRecipeCalc()">
             </div>
-            <div id="recipe-ingredients" class="mb-4 max-h-64 overflow-y-auto"></div>
-            <div id="recipe-description" class="text-sm opacity-80 mb-4"></div>
-            <button onclick="addRecipeToMenu()" class="btn-primary w-full py-3 rounded-xl">Добавить в меню</button>
+            <div id="recipe-ingredients" class="mb-4 max-h-64 overflow-y-auto space-y-2"></div>
+            <div class="text-[10px] opacity-50 uppercase mb-2">Инструкция:</div>
+            <div id="recipe-description" class="text-sm opacity-80 mb-6 leading-relaxed"></div>
+            <button onclick="addRecipeToMenu()" class="btn-primary w-full py-4 rounded-xl uppercase text-[10px] font-bold tracking-widest">Добавить в дневник</button>
         </div>
     </div>
 
     <div id="app-container" class="max-w-md mx-auto pb-24">
         <header class="flex justify-between items-center mb-8">
-            <div><h1 class="text-2xl tracking-wider uppercase">Гибридный цех</h1><p class="text-[10px] opacity-50 uppercase tracking-[0.2em]">Дневник питания</p></div>
-            <div id="user-avatar" class="w-10 h-10 rounded-full bg-beige/10 border border-beige/20 overflow-hidden"><img id="avatar-img" src="" class="w-full h-full object-cover hidden"></div>
+            <div>
+                <h1 class="text-2xl tracking-wider uppercase flex items-center gap-2">
+                    Гибридный цех
+                    <span id="premium-badge" class="hidden text-[8px] bg-gold/20 text-gold px-2 py-0.5 rounded-full border border-gold/30">PREMIUM</span>
+                </h1>
+                <p class="text-[10px] opacity-50 uppercase tracking-[0.2em]">Система управления питанием</p>
+            </div>
+            <div id="user-avatar" class="w-10 h-10 rounded-full bg-beige/10 border border-beige/20 overflow-hidden shadow-lg">
+                <img id="avatar-img" src="" class="w-full h-full object-cover hidden">
+            </div>
         </header>
 
         <!-- Dashboard -->
@@ -136,6 +159,7 @@
                     <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Цель</label><select id="goal"><option value="lose">Похудение</option><option value="keep">Сохранение</option><option value="gain">Набор массы</option></select></div>
                 </div>
                 <button onclick="saveProfile()" class="btn-primary w-full py-4 rounded-xl mt-4 uppercase text-[10px] font-bold tracking-widest">Сохранить данные</button>
+                
                 <div id="profile-targets" class="mt-6 pt-6 border-t border-white/10 space-y-3 hidden">
                     <p class="text-[10px] opacity-50 uppercase">Ваши цели:</p>
                     <div class="grid grid-cols-2 gap-2">
@@ -147,6 +171,13 @@
                         <p class="text-[11px]"><span class="opacity-60">Ж:</span> <span id="target-fat" class="font-bold">0</span>г</p>
                         <p class="text-[11px]"><span class="opacity-60">У:</span> <span id="target-carbs" class="font-bold">0</span>г</p>
                     </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/10">
+                    <button onclick="checkSubscription(true)" class="w-full py-3 rounded-xl border border-gold/30 text-gold text-[10px] uppercase font-bold tracking-widest flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                        Проверить подписку / Обновить Premium
+                    </button>
                 </div>
             </div>
         </section>
@@ -169,7 +200,7 @@
             <div id="analytics-container"></div>
         </section>
 
-        <nav class="fixed bottom-6 left-4 right-4 h-20 glass-card flex items-center justify-around px-4">
+        <nav class="fixed bottom-6 left-4 right-4 h-20 glass-card flex items-center justify-around px-4 z-50">
             <button onclick="showTab('dashboard')" class="nav-btn flex flex-col items-center transition-all" id="nav-dashboard"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Дневник</span></button>
             <button onclick="showTab('stats')" class="nav-btn flex flex-col items-center opacity-40" id="nav-stats"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Статистика</span></button>
             <button onclick="showTab('diets')" class="nav-btn flex flex-col items-center opacity-40" id="nav-diets"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Диета</span></button>
@@ -184,90 +215,113 @@
         let userProfile = null, diary = [], waterIntake = 0, currentViewDate = null, currentRecipe = null;
         const BOT_TOKEN = '8821569325:AAEz0hGIVdG1Ti3lCNuR9twOxre_uDqFHRI';
         const CHANNEL_ID = '@hybriddepartment';
-        const WHITELIST_IDS = [123456789, 987654321];
+        
+        window.shopPeriod = 'day'; 
+        window.mealsCount = 4;
+        window.analyticsPeriod = 'day';
+        window.altIdx = {};
 
         const RECIPES = {
-            "Омлет с овощами": {
-                "r": "Разбейте яйца в миску, добавьте немного молока или воды, посолите и взбейте вилкой. Нарежьте огурец или помидор мелкими кусочками. Разогрейте сковороду с каплей масла, вылейте яичную смесь. Готовьте на медленном огне под крышкой 5-7 минут до готовности. Подавайте со свежими овощами.",
-                "i": {"Яйцо куриное (1 шт)": 110, "Помидор": 50, "Огурец": 50, "Масло подсолнечное": 5}
+            "Овсяная каша с ягодами и миндалем": {
+                "r": "Залейте овсяные хлопья долгого варения водой или нежирным молоком (1:2). Варите на медленном огне 10-15 минут. В готовую кашу добавьте ягоды и измельченный миндаль.",
+                "i": {"Овсянка": 50, "Молоко 2.5%": 150, "Миндаль": 10, "Голубика": 30}
             },
-            "Гречка с курицей": {
-                "r": "Промойте гречку и залейте водой в соотношении 1:2. Поставьте на огонь, после закипания варите 15-20 минут до впитывания воды. Куриную грудку нарежьте кусочками, посолите и обжарьте на сковороде или запеките в духовке 20 минут при 180 градусах. Смешайте готовую гречку с курицей.",
-                "i": {"Гречка (сухая)": 70, "Куриная грудка (сырая)": 150, "Масло подсолнечное": 5}
+            "Скрэмбл с авокадо и цельнозерновым тостом": {
+                "r": "Взбейте 2 яйца. Обжарьте на сковороде с каплей оливкового масла 2-3 минуты. Подавайте на цельнозерновом тосте с 1/4 авокадо.",
+                "i": {"Яйцо куриное (1 шт)": 110, "Хлеб ржаной": 40, "Авокадо": 50, "Масло подсолнечное": 5}
             },
-            "Творог с яблоком и медом": {
-                "r": "Выложите творог в тарелку. Яблоко промойте, удалите сердцевину и нарежьте мелкими кубиками или натрите на терке. Смешайте творог с яблоком, добавьте ложку меда. Можно добавить щепотку корицы для аромата. Тщательно перемешайте.",
-                "i": {"Творог 5%": 200, "Яблоко": 100, "Мед": 15}
+            "Творог 5% с грецким орехом и семенами чиа": {
+                "r": "Смешайте творог с ложкой йогурта, добавьте грецкие орехи и семена чиа. Дайте настояться 5 минут.",
+                "i": {"Творог 5%": 200, "Грецкий орех": 15, "Семена чиа": 5}
             },
-            "Рыба запеченная с картофелем": {
-                "r": "Картофель очистите и нарежьте тонкими кружочками. Рыбу (минтай или треску) посолите, добавьте специи. Выложите картофель и рыбу на противень, слегка смазанный маслом. Запекайте в духовке 30-35 минут при температуре 190 градусов до золотистой корочки картофеля.",
-                "i": {"Минтай филе": 200, "Картофель": 200, "Масло подсолнечное": 10}
+            "Стейк из индейки с брокколи на пару": {
+                "r": "Филе индейки обжарьте на сковороде-гриль по 5 минут с каждой стороны. Брокколи приготовьте на пару 7 минут.",
+                "i": {"Индейка филе": 200, "Брокколи": 150, "Масло подсолнечное": 5}
             },
-            "Макароны с сыром": {
-                "r": "Вскипятите воду, посолите и засыпьте макароны. Варите 8-10 минут до готовности, затем слейте воду. Сыр натрите на мелкой терке. Добавьте в горячие макароны кусочек сливочного масла и тертый сыр, перемешайте, пока сыр не расплавится.",
-                "i": {"Макароны": 80, "Сыр Российский": 40, "Масло сливочное": 10}
+            "Запеченный минтай с диким рисом": {
+                "r": "Рис отварите до готовности. Филе минтая запекайте в фольге при 180 градусах 20 минут.",
+                "i": {"Минтай филе": 200, "Дикий рис": 60, "Масло подсолнечное": 5}
             },
-            "Овсяная каша на молоке": {
-                "r": "В кастрюлю налейте молоко, доведите до кипения. Всыпьте овсяные хлопья, уменьшите огонь. Варите, помешивая, 5-10 минут (в зависимости от типа хлопьев). В конце добавьте щепотку соли и сахара по вкусу. Дайте настояться под крышкой 5 минут.",
-                "i": {"Овсянка": 50, "Молоко 2.5%": 200, "Масло сливочное": 5}
+            "Салат с тунцом и нутом": {
+                "r": "Смешайте тунец, отварной нут, огурец и шпинат. Заправьте оливковым маслом и лимонным соком.",
+                "i": {"Тунец консервированный": 100, "Нут отварной": 100, "Огурец": 100, "Масло подсолнечное": 5}
+            },
+            "Куриное филе с киноа и овощами": {
+                "r": "Киноа отварите. Куриное филе потушите с болгарским перцем и кабачком. Смешайте с киноа.",
+                "i": {"Куриная грудка (сырая)": 150, "Киноа": 50, "Болгарский перец": 50, "Масло подсолнечное": 5}
+            },
+            "Греческий йогурт с семенами льна": {
+                "r": "В натуральный йогурт добавьте семена льна и корицу. Перемешайте.",
+                "i": {"Йогурт натуральный": 200, "Семена льна": 10}
+            },
+            "Зеленый салат с яйцом пашот": {
+                "r": "Сварите яйцо пашот. Выложите на смесь салатных листьев с огурцом, заправьте маслом.",
+                "i": {"Яйцо куриное (1 шт)": 55, "Салат листовой": 50, "Огурец": 100, "Масло подсолнечное": 5}
+            },
+            "Протеиновый смузи с бананом": {
+                "r": "В блендере смешайте протеин, половину банана и 200 мл молока. Взбейте.",
+                "i": {"Протеин (порция 30г)": 30, "Банан": 60, "Молоко 2.5%": 100}
+            },
+            "Запеченное яблоко с творогом": {
+                "r": "У яблока удалите сердцевину, наполните творогом. Запекайте в духовке 10 минут.",
+                "i": {"Яблоко": 150, "Творог 5%": 50}
+            },
+            "Горсть орехов (миндаль/фундук)": {
+                "r": "Употребляйте как полезный перекус. Орехи богаты белком и полезными жирами.",
+                "i": {"Миндаль": 30}
             }
         };
 
         const ALTERNATIVES = {
-            "Омлет с овощами": ["Творог с яблоком и медом", "Овсяная каша на молоке"],
-            "Гречка с курицей": ["Рыба запеченная с картофелем", "Макароны с сыром"],
-            "Творог с яблоком и медом": ["Омлет с овощами", "Банан"],
-            "Рыба запеченная с картофелем": ["Гречка с курицей", "Индейка филе"],
-            "Макароны с сыром": ["Гречка с курицей", "Картофель с рыбой"],
-            "Овсяная каша на молоке": ["Омлет с овощами", "Творог с яблоком"]
+            "Овсяная каша с ягодами и миндалем": ["Скрэмбл с авокадо и цельнозерновым тостом", "Творог 5% с грецким орехом и семенами чиа", "Греческий йогурт с семенами льна"],
+            "Скрэмбл с авокадо и цельнозерновым тостом": ["Овсяная каша с ягодами и миндалем", "Зеленый салат с яйцом пашот", "Творог 5% с грецким орехом и семенами чиа"],
+            "Творог 5% с грецким орехом и семенами чиа": ["Греческий йогурт с семенами льна", "Овсяная каша с ягодами и миндалем", "Запеченное яблоко с творогом"],
+            "Стейк из индейки с брокколи на пару": ["Запеченный минтай с диким рисом", "Салат с тунцом и нутом", "Куриное филе с киноа и овощами"],
+            "Запеченный минтай с диким рисом": ["Стейк из индейки с брокколи на пару", "Куриное филе с киноа и овощами", "Салат с тунцом и нутом"],
+            "Салат с тунцом и нутом": ["Запеченный минтай с диким рисом", "Стейк из индейки с брокколи на пару", "Куриное филе с киноа и овощами"],
+            "Куриное филе с киноа и овощами": ["Стейк из индейки с брокколи на пару", "Запеченный минтай с диким рисом", "Салат с тунцом и нутом"],
+            "Греческий йогурт с семенами льна": ["Протеиновый смузи с бананом", "Запеченное яблоко с творогом", "Горсть орехов (миндаль/фундук)"],
+            "Протеиновый смузи с бананом": ["Греческий йогурт с семенами льна", "Горсть орехов (миндаль/фундук)", "Запеченное яблоко с творогом"],
+            "Запеченное яблоко с творогом": ["Греческий йогурт с семенами льна", "Протеиновый смузи с бананом", "Зеленый салат с яйцом пашот"],
+            "Горсть орехов (миндаль/фундук)": ["Протеиновый смузи с бананом", "Греческий йогурт с семенами льна", "Запеченное яблоко с творогом"],
+            "Зеленый салат с яйцом пашот": ["Скрэмбл с авокадо и цельнозерновым тостом", "Овсяная каша с ягодами и миндалем", "Творог 5% с грецким орехом и семенами чиа"]
         };
 
         const FOOD_DB = [
             {"n": "Куриная грудка (сырая)", "k": 113, "p": 23.5, "f": 1.9, "c": 0},
-            {"n": "Куриное бедро (без кожи)", "k": 130, "p": 19, "f": 6, "c": 0},
             {"n": "Индейка филе", "k": 115, "p": 24, "f": 2, "c": 0},
-            {"n": "Говядина постная", "k": 158, "p": 22, "f": 7, "c": 0},
             {"n": "Минтай филе", "k": 72, "p": 16, "f": 0.5, "c": 0},
-            {"n": "Горбуша", "k": 142, "p": 20, "f": 6, "c": 0},
-            {"n": "Треска", "k": 78, "p": 17, "f": 0.7, "c": 0},
-            {"n": "Яйцо куриное (1 шт)", "k": 74, "p": 6.3, "f": 5, "c": 0.4},
             {"n": "Творог 5%", "k": 121, "p": 17, "f": 5, "c": 3},
-            {"n": "Творог 9%", "k": 159, "p": 16, "f": 9, "c": 3},
-            {"n": "Сметана 15%", "k": 160, "p": 2.6, "f": 15, "c": 3.6},
-            {"n": "Молоко 2.5%", "k": 52, "p": 2.8, "f": 2.5, "c": 4.7},
-            {"n": "Кефир 1%", "k": 40, "p": 3, "f": 1, "c": 4},
-            {"n": "Сыр Российский", "k": 363, "p": 23, "f": 29, "c": 0},
-            {"n": "Гречка (сухая)", "k": 330, "p": 12, "f": 3, "c": 64},
-            {"n": "Рис (сухой)", "k": 344, "p": 6.7, "f": 0.7, "c": 78},
+            {"n": "Яйцо куриное (1 шт)", "k": 74, "p": 6.3, "f": 5, "c": 0.4},
             {"n": "Овсянка", "k": 366, "p": 12, "f": 7, "c": 60},
-            {"n": "Макароны", "k": 350, "p": 12, "f": 1.5, "c": 71},
-            {"n": "Картофель", "k": 77, "p": 2, "f": 0.4, "c": 17},
-            {"n": "Хлеб ржаной", "k": 259, "p": 9, "f": 3, "c": 48},
+            {"n": "Гречка (сухая)", "k": 330, "p": 12, "f": 3, "c": 64},
+            {"n": "Дикий рис", "k": 357, "p": 15, "f": 1, "c": 75},
+            {"n": "Киноа", "k": 368, "p": 14, "f": 6, "c": 64},
+            {"n": "Нут отварной", "k": 164, "p": 9, "f": 2.6, "c": 27},
+            {"n": "Тунец консервированный", "k": 101, "p": 23, "f": 1, "c": 0},
+            {"n": "Авокадо", "k": 160, "p": 2, "f": 15, "c": 9},
+            {"n": "Миндаль", "k": 579, "p": 21, "f": 50, "c": 22},
+            {"n": "Грецкий орех", "k": 654, "p": 15, "f": 65, "c": 14},
+            {"n": "Семена чиа", "k": 486, "p": 17, "f": 31, "c": 42},
+            {"n": "Семена льна", "k": 534, "p": 18, "f": 42, "c": 29},
+            {"n": "Брокколи", "k": 34, "p": 2.8, "f": 0.4, "c": 7},
+            {"n": "Болгарский перец", "k": 26, "p": 1, "f": 0.3, "c": 6},
             {"n": "Огурец", "k": 15, "p": 0.8, "f": 0.1, "c": 3},
             {"n": "Помидор", "k": 18, "p": 0.9, "f": 0.2, "c": 3.9},
-            {"n": "Капуста", "k": 27, "p": 1.8, "f": 0.1, "c": 4.7},
-            {"n": "Морковь", "k": 41, "p": 0.9, "f": 0.2, "c": 9.6},
-            {"n": "Лук", "k": 40, "p": 1.1, "f": 0.1, "c": 9},
             {"n": "Яблоко", "k": 52, "p": 0.3, "f": 0.2, "c": 14},
             {"n": "Банан", "k": 89, "p": 1.1, "f": 0.3, "c": 23},
+            {"n": "Голубика", "k": 57, "p": 0.7, "f": 0.3, "c": 14},
+            {"n": "Йогурт натуральный", "k": 60, "p": 5, "f": 3, "c": 4},
+            {"n": "Молоко 2.5%", "k": 52, "p": 2.8, "f": 2.5, "c": 4.7},
             {"n": "Масло подсолнечное", "k": 884, "p": 0, "f": 100, "c": 0},
-            {"n": "Масло сливочное", "k": 748, "p": 0.5, "f": 82.5, "c": 0.8},
-            {"n": "Мед", "k": 304, "p": 0.3, "f": 0, "c": 82},
-            {"n": "Протеин (порция 30г)", "k": 110, "p": 24, "f": 1, "c": 2}
+            {"n": "Хлеб ржаной", "k": 259, "p": 9, "f": 3, "c": 48},
+            {"n": "Протеин (порция 30г)", "k": 110, "p": 24, "f": 1, "c": 2},
+            {"n": "Салат листовой", "k": 15, "p": 1.5, "f": 0.2, "c": 2}
         ];
-
-        window.shopPeriod = 'day';
-        window.analyticsPeriod = 'day';
-        window.altIdx = {};
 
         function init() {
             checkSubscription();
             loadUserData();
-            const userId = tg.initDataUnsafe?.user?.id;
-            if (userId && WHITELIST_IDS.includes(userId) && userProfile) {
-                userProfile.isPremium = true;
-                localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
-            }
             populateSuggestions();
             if (tg.initDataUnsafe?.user?.photo_url) {
                 const img = document.getElementById('avatar-img');
@@ -277,6 +331,48 @@
             currentViewDate = getTodayKey();
             showTab(userProfile ? 'dashboard' : 'profile');
             updateUI();
+        }
+
+        async function checkSubscription(force = false) {
+            const userId = tg.initDataUnsafe?.user?.id;
+            if (!userId) { if(force) tg.showAlert("Ошибка идентификации Telegram"); return; }
+            
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_ID}&user_id=${userId}`);
+                const data = await res.json();
+                const isSubscribed = data.ok && ['member', 'administrator', 'creator'].includes(data.result.status);
+                
+                if (isSubscribed) {
+                    document.getElementById('sub-overlay').classList.add('hidden');
+                    enablePremium();
+                    if(force) tg.showAlert("Подписка подтверждена! Premium дизайн активирован.");
+                } else {
+                    document.getElementById('sub-overlay').classList.remove('hidden');
+                    disablePremium();
+                }
+            } catch (e) { 
+                console.error(e);
+                // В случае ошибки API (например, блокировка в РФ), даем доступ если это не принудительная проверка
+                if(!force) document.getElementById('sub-overlay').classList.add('hidden');
+            }
+        }
+
+        function enablePremium() {
+            document.body.classList.add('premium-mode');
+            document.getElementById('premium-badge').classList.remove('hidden');
+            if(userProfile) {
+                userProfile.isPremium = true;
+                localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+            }
+        }
+
+        function disablePremium() {
+            document.body.classList.remove('premium-mode');
+            document.getElementById('premium-badge').classList.add('hidden');
+            if(userProfile) {
+                userProfile.isPremium = false;
+                localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+            }
         }
 
         function populateSuggestions() {
@@ -317,22 +413,27 @@
             const year = window.calendarDate.getFullYear();
             const month = window.calendarDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            
             const header = document.createElement('div');
             header.className = 'flex justify-between items-center mb-4';
             header.innerHTML = `<button onclick="changeMonth(-1)" class="p-2 opacity-60">←</button><h3 class="text-xl">${monthNames[month]} ${year}</h3><button onclick="changeMonth(1)" class="p-2 opacity-60">→</button>`;
             container.appendChild(header);
+            
             const grid = document.createElement('div');
             grid.className = 'calendar-grid glass-card p-4';
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const firstDay = new Date(year, month, 1).getDay();
             const offset = firstDay === 0 ? 6 : firstDay - 1;
+            
             ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].forEach(d => {
                 const dayLabel = document.createElement('div');
                 dayLabel.className = 'text-[10px] opacity-40 text-center pb-2';
                 dayLabel.innerText = d;
                 grid.appendChild(dayLabel);
             });
+            
             for(let i=0; i<offset; i++) grid.appendChild(document.createElement('div'));
+            
             for(let d=1; d<=daysInMonth; d++) {
                 const dateKey = `${year}-${String(month+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const hasData = localStorage.getItem('hybrid_diary_' + dateKey);
@@ -354,24 +455,45 @@
             const goal = userProfile?.goal || 'keep';
             let goalText = goal === 'lose' ? "Похудение" : (goal === 'gain' ? "Набор массы" : "Поддержание");
             
-            const basePlans = {
-                lose: { name: "Диета: Снижение веса", meals: [{t:"Завтрак", c:"Омлет с овощами"}, {t:"Обед", c:"Рыба запеченная с картофелем"}, {t:"Ужин", c:"Творог с яблоком и медом"}] },
-                keep: { name: "Диета: Поддержание", meals: [{t:"Завтрак", c:"Овсяная каша на молоке"}, {t:"Обед", c:"Гречка с курицей"}, {t:"Ужин", c:"Рыба запеченная с картофелем"}] },
-                gain: { name: "Диета: Набор массы", meals: [{t:"Завтрак", c:"Макароны с сыром"}, {t:"Обед", c:"Гречка с курицей"}, {t:"Ужин", c:"Творог с яблоком и медом"}] }
+            const generatePlan = (count) => {
+                const breakfast = ["Овсяная каша с ягодами и миндалем", "Скрэмбл с авокадо и цельнозерновым тостом", "Творог 5% с грецким орехом и семенами чиа"];
+                const lunch = ["Стейк из индейки с брокколи на пару", "Запеченный минтай с диким рисом", "Куриное филе с киноа и овощами"];
+                const dinner = ["Салат с тунцом и нутом", "Зеленый салат с яйцом пашот", "Стейк из индейки с брокколи на пару"];
+                const snacks = ["Греческий йогурт с семенами льна", "Протеиновый смузи с бананом", "Запеченное яблоко с творогом", "Горсть орехов (миндаль/фундук)"];
+
+                let meals = [];
+                if (count == 3) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Обед", c:lunch[0]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 4) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус", c:snacks[0]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 5) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[1]}, {t:"Ужин", c:dinner[0]}];
+                } else if (count == 6) {
+                    meals = [{t:"Завтрак", c:breakfast[0]}, {t:"Перекус 1", c:snacks[0]}, {t:"Обед", c:lunch[0]}, {t:"Перекус 2", c:snacks[1]}, {t:"Ужин", c:dinner[0]}, {t:"Поздний ужин", c:snacks[2]}];
+                }
+                return { name: `Профессиональный план (${count} приемов)`, meals: meals };
             };
 
-            if (!window.currentDietPlan) {
-                window.currentDietPlan = JSON.parse(JSON.stringify(basePlans[goal] || basePlans.keep));
+            if (!window.currentDietPlan || window.currentDietPlan.meals.length != window.mealsCount) {
+                window.currentDietPlan = generatePlan(window.mealsCount);
+                window.altIdx = {};
             }
             
             const plan = window.currentDietPlan;
-            container.innerHTML = `<div class="p-4 bg-beige/10 rounded-xl mb-4"><p class="text-xs opacity-70">Цель: <b>${goalText}</b>. План: <b>${targetKcal} ккал</b></p></div>`;
+            container.innerHTML = `
+                <div class="p-4 bg-white/5 rounded-xl mb-4 border border-white/10">
+                    <p class="text-xs opacity-70 mb-3">Цель: <b>${goalText}</b>. План: <b>${targetKcal} ккал</b></p>
+                    <label class="text-[10px] opacity-50 uppercase block mb-2">Количество приемов пищи:</label>
+                    <div class="flex gap-1">
+                        ${[3,4,5,6].map(n => `<button onclick="setMealsCount(${n})" class="flex-1 py-2 rounded-lg border border-white/10 text-[10px] font-bold ${window.mealsCount === n ? 'bg-beige text-dark-green' : ''}">${n}</button>`).join('')}
+                    </div>
+                </div>`;
             
             const card = document.createElement('div');
             card.className = 'glass-card p-5 mb-4';
             let mealsHtml = '';
             plan.meals.forEach((m, idx) => {
-                mealsHtml += `<div class="border-b border-white/5 py-3">
+                mealsHtml += `<div class="border-b border-white/5 py-3 last:border-0">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-[10px] opacity-40 uppercase">${m.t}</span>
                         <div class="flex gap-2">
@@ -388,15 +510,19 @@
                 <div class="mb-4">
                     <p class="text-[10px] opacity-50 uppercase mb-2">Список продуктов:</p>
                     <div class="flex gap-2">
-                        <button onclick="setShopPeriod('day')" id="shop-day" class="flex-1 py-2 rounded-lg border border-beige/20 text-[10px] uppercase font-bold ${window.shopPeriod === 'week' ? '' : 'bg-beige/20'}">На день</button>
-                        <button onclick="setShopPeriod('week')" id="shop-week" class="flex-1 py-2 rounded-lg border border-beige/20 text-[10px] uppercase font-bold ${window.shopPeriod === 'week' ? 'bg-beige/20' : ''}">На неделю</button>
+                        <button onclick="setShopPeriod('day')" id="shop-day" class="flex-1 py-2 rounded-lg border border-white/10 text-[10px] uppercase font-bold ${window.shopPeriod === 'week' ? '' : 'bg-white/10'}">На день</button>
+                        <button onclick="setShopPeriod('week')" id="shop-week" class="flex-1 py-2 rounded-lg border border-white/10 text-[10px] uppercase font-bold ${window.shopPeriod === 'week' ? 'bg-white/10' : ''}">На неделю</button>
                     </div>
                 </div>
                 <button onclick='generateShoppingList()' class="w-full py-3 border border-beige/20 rounded-xl text-[10px] uppercase font-bold tracking-widest">🛒 Получить список</button>`;
             container.appendChild(card);
         }
 
-        function setShopPeriod(p) { window.shopPeriod = p; renderDiets(); }
+        function setMealsCount(n) {
+            window.mealsCount = n;
+            window.currentDietPlan = null;
+            renderDiets();
+        }
 
         function replaceWithAlternative(name, idx) {
             const alts = ALTERNATIVES[name];
@@ -406,8 +532,10 @@
             window.altIdx[idx]++;
             window.currentDietPlan.meals[idx].c = nextAlt;
             renderDiets();
-            tg.showAlert('Блюдо заменено на: ' + nextAlt);
+            tg.showAlert('Вариант заменен на: ' + nextAlt);
         }
+
+        function setShopPeriod(p) { window.shopPeriod = p; renderDiets(); }
 
         function generateShoppingList() {
             const plan = window.currentDietPlan;
@@ -443,7 +571,7 @@
             let ingHtml = '';
             for (let ing in recipe.i) {
                 const amount = recipe.i[ing] * portions;
-                ingHtml += `<div class="py-2 border-b border-white/5"><span class="text-sm">${ing}:</span> <span class="font-bold">${Math.round(amount * 10) / 10}г</span></div>`;
+                ingHtml += `<div class="py-2 border-b border-white/5 flex justify-between items-center"><span class="text-sm">${ing}</span> <span class="font-bold text-gold">${Math.round(amount * 10) / 10}г</span></div>`;
             }
             document.getElementById('recipe-ingredients').innerHTML = ingHtml;
         }
@@ -500,7 +628,7 @@
                 <div class="glass-card p-5 mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-xs uppercase opacity-60">Среднее за: ${periodText}</h4>
-                        <span class="text-xs font-bold">${calPct}%</span>
+                        <span class="text-xs font-bold text-gold">${calPct}%</span>
                     </div>
                     <div class="progress-bar mb-2"><div class="progress-fill" style="width: ${Math.min(calPct, 100)}%"></div></div>
                     <p class="text-sm font-bold">${Math.round(cur.k)} / ${targets.kcal} ккал</p>
@@ -532,6 +660,7 @@
                 document.getElementById('activity').value = userProfile.activity;
                 document.getElementById('goal').value = userProfile.goal;
                 showTargets();
+                if(userProfile.isPremium) enablePremium();
             }
             const diaryData = localStorage.getItem('hybrid_diary_' + dateKey);
             diary = diaryData ? JSON.parse(diaryData) : [];
@@ -546,7 +675,8 @@
             let kcal = Math.round(bmr * activity);
             if (goal === 'lose') kcal -= 500;
             if (goal === 'gain') kcal += 500;
-            userProfile = { gender, age, weight, height, activity, goal, targets: { kcal, p: Math.round(weight * 2), f: Math.round(weight * 1), c: Math.round((kcal - (weight * 2 * 4) - (weight * 9)) / 4) }, isPremium: true };
+            const wasPremium = userProfile ? userProfile.isPremium : false;
+            userProfile = { gender, age, weight, height, activity, goal, targets: { kcal, p: Math.round(weight * 2), f: Math.round(weight * 1), c: Math.round((kcal - (weight * 2 * 4) - (weight * 9)) / 4) }, isPremium: wasPremium };
             localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
             showTargets();
             updateUI();
@@ -586,7 +716,7 @@
             list.innerHTML = diary.length ? '' : `<p class="text-center opacity-40 py-8 text-xs">Дневник пуст</p>`;
             diary.forEach((item, idx) => {
                 const el = document.createElement('div');
-                el.className = 'glass-card p-4 flex justify-between items-center';
+                el.className = 'glass-card p-4 flex justify-between items-center border border-white/5';
                 el.innerHTML = `<div><p class="font-semibold text-sm">${item.name}</p><p class="text-[10px] opacity-50 uppercase">${Math.round(item.k)} ккал | Б:${Math.round(item.p)} Ж:${Math.round(item.f)} У:${Math.round(item.c)}</p></div><button onclick="removeItem(${idx})" class="opacity-30 p-2">✕</button>`;
                 list.appendChild(el);
             });
@@ -618,16 +748,7 @@
             showTab('dashboard'); 
             updateUI();
         }
-        async function checkSubscription() {
-            const userId = tg.initDataUnsafe?.user?.id;
-            if (!userId) return;
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_ID}&user_id=${userId}`);
-                const data = await res.json();
-                if (data.ok && !['member', 'administrator', 'creator'].includes(data.result.status)) document.getElementById('sub-overlay').classList.remove('hidden');
-                else document.getElementById('sub-overlay').classList.add('hidden');
-            } catch (e) { console.error(e); }
-        }
+        
         window.onload = init;
     </script>
 </body>
