@@ -539,18 +539,27 @@
 
         function generateShoppingList() {
             const plan = window.currentDietPlan;
+            if (!plan) { tg.showAlert("Сначала выберите план питания"); return; }
             const mult = window.shopPeriod === 'week' ? 7 : 1;
             let items = {};
             plan.meals.forEach(m => {
                 const r = RECIPES[m.c];
-                if (r) for (let ing in r.i) items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
+                if (r && r.i) {
+                    for (let ing in r.i) {
+                        items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
+                    }
+                }
             });
             let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):\n\n`;
+            let hasItems = false;
             for (let n in items) {
+                hasItems = true;
                 let v = items[n], u = "г";
                 if (v >= 1000) { v = (v/1000).toFixed(1); u = "кг"; }
+                else { v = Math.round(v); }
                 str += `• ${n}: ${v}${u}\n`;
             }
+            if (!hasItems) { tg.showAlert("Список пуст. Выберите блюда в диете."); return; }
             tg.showAlert(str);
         }
 
