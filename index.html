@@ -582,15 +582,37 @@
         }
 
         function renderDiets() {
-            const container = document.getElementById('diets-container');
-            const targetKcal = userProfile?.targets?.kcal || 2000;
-            const goal = userProfile?.goal || 'keep';
-            let goalText = goal === 'lose' ? "Похудение" : (goal === 'gain' ? "Набор массы" : "Поддержание");
-            
-            if (!window.currentDietPlan || window.currentDietPlan.meals.length != window.mealsCount) {
-                window.currentDietPlan = generatePlan(window.mealsCount);
-                window.altIdx = {};
-            }
+    const container = document.getElementById('diet-plan-container');
+    if (!container || !RECIPES) return;
+
+    // Схема приемов: 1-завтрак, 2-обед, 3-ужин, 4-перекус
+    const patterns = {
+        3: [1, 2, 3],
+        4: [1, 4, 2, 3],
+        5: [1, 4, 2, 4, 3],
+        6: [1, 4, 2, 4, 3, 4]
+    };
+
+    const currentPattern = patterns[window.mealsCount] || patterns[3];
+    let meals = [];
+
+    currentPattern.forEach(type => {
+        const availableKeys = Object.keys(RECIPES).filter(k => RECIPES[k].t === type);
+        if (availableKeys.length > 0) {
+            const randomKey = availableKeys[Math.floor(Math.random() * availableKeys.length)];
+            meals.push({ c: randomKey, t: type });
+        }
+    });
+
+    window.currentDietPlan.meals = meals;
+
+    container.innerHTML = meals.map((m, i) => `
+        <div class="diet-card">
+            <h4>Прием №${i + 1}</h4>
+            <p><b>${RECIPES[m.c].n}</b></p>
+        </div>
+    `).join('');
+}
             
             const plan = window.currentDietPlan;
             container.innerHTML = `
