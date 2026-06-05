@@ -477,6 +477,11 @@
             if (!window.currentDietPlan || window.currentDietPlan.meals.length != window.mealsCount) {
                 window.currentDietPlan = generatePlan(window.mealsCount);
                 window.altIdx = {};
+            } else {
+                // Синхронизируем план с текущим количеством приемов пищи на случай сбоя
+                if (window.currentDietPlan.meals.length != window.mealsCount) {
+                    window.currentDietPlan = generatePlan(window.mealsCount);
+                }
             }
             
             const plan = window.currentDietPlan;
@@ -538,10 +543,16 @@
         function setShopPeriod(p) { window.shopPeriod = p; renderDiets(); }
 
         function generateShoppingList() {
+            // Принудительно берем актуальный план из текущего состояния
             const plan = window.currentDietPlan;
-            if (!plan) { tg.showAlert("Сначала выберите план питания"); return; }
+            if (!plan || !plan.meals || plan.meals.length === 0) {
+                tg.showAlert("Ошибка: План питания не сформирован. Попробуйте переключить количество приемов пищи.");
+                return;
+            }
+            
             const mult = window.shopPeriod === 'week' ? 7 : 1;
             let items = {};
+            
             plan.meals.forEach(m => {
                 const r = RECIPES[m.c];
                 if (r && r.i) {
@@ -550,16 +561,30 @@
                     }
                 }
             });
+            
             let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):\n\n`;
             let hasItems = false;
-            for (let n in items) {
+            
+            // Сортируем продукты по алфавиту для удобства
+            const sortedKeys = Object.keys(items).sort();
+            
+            for (let n of sortedKeys) {
                 hasItems = true;
                 let v = items[n], u = "г";
-                if (v >= 1000) { v = (v/1000).toFixed(1); u = "кг"; }
-                else { v = Math.round(v); }
+                if (v >= 1000) { 
+                    v = (v/1000).toFixed(2); 
+                    u = "кг"; 
+                } else { 
+                    v = Math.round(v); 
+                }
                 str += `• ${n}: ${v}${u}\n`;
             }
-            if (!hasItems) { tg.showAlert("Список пуст. Выберите блюда в диете."); return; }
+            
+            if (!hasItems) {
+                tg.showAlert("Не удалось найти ингредиенты для выбранных блюд.");
+                return;
+            }
+            
             tg.showAlert(str);
         }
 
