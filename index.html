@@ -220,6 +220,8 @@
         window.mealsCount = 4;
         window.analyticsPeriod = 'day';
         window.altIdx = {};
+        window.mealsCount = window.mealsCount || 3;
+window.currentDietPlan = { meals: [] };
 
         const RECIPES = {
             "Овсяная каша с ягодами и миндалем": {
