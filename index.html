@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -114,15 +114,53 @@
                     <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Вес (кг)</label><input type="number" id="weight" placeholder="75"></div>
                     <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Рост (см)</label><input type="number" id="height" placeholder="180"></div>
                 </div>
-                <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Активность</label><select id="activity"><option value="1.2">Минимальная</option><option value="1.375">Слабая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option><option value="1.9">Экстремальная</option></select></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Активность</label><select id="activity"><option value="1.2">Минимальная</option><option value="1.375">Слабая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option><option value="1.9">Экстремальная</option></select></div>
+                    <div><label class="text-[10px] opacity-50 block mb-1 uppercase tracking-wider">Цель</label><select id="goal"><option value="lose">Похудение</option><option value="keep">Сохранение</option><option value="gain">Набор массы</option></select></div>
+                </div>
                 <button onclick="saveProfile()" class="btn-primary w-full py-4 rounded-xl mt-4 uppercase text-[10px] font-bold tracking-widest">Сохранить данные</button>
                 <div id="profile-targets" class="mt-6 pt-6 border-t border-white/10 space-y-3 hidden">
                     <p class="text-[10px] opacity-50 uppercase">Ваши цели:</p>
-                    <p class="text-sm"><span class="opacity-60">Калории:</span> <span id="target-kcal" class="font-bold">0</span> ккал</p>
-                    <p class="text-sm"><span class="opacity-60">Белки:</span> <span id="target-protein" class="font-bold">0</span>г</p>
-                    <p class="text-sm"><span class="opacity-60">Жиры:</span> <span id="target-fat" class="font-bold">0</span>г</p>
-                    <p class="text-sm"><span class="opacity-60">Углеводы:</span> <span id="target-carbs" class="font-bold">0</span>г</p>
-                    <p class="text-sm"><span class="opacity-60">Вода:</span> <span id="target-water" class="font-bold">0</span> мл</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <p class="text-sm"><span class="opacity-60">Калории:</span> <span id="target-kcal" class="font-bold">0</span> ккал</p>
+                        <p class="text-sm"><span class="opacity-60">Вода:</span> <span id="target-water" class="font-bold">0</span> мл</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 border-t border-white/5 pt-2">
+                        <p class="text-[11px]"><span class="opacity-60">Б:</span> <span id="target-protein" class="font-bold">0</span>г</p>
+                        <p class="text-[11px]"><span class="opacity-60">Ж:</span> <span id="target-fat" class="font-bold">0</span>г</p>
+                        <p class="text-[11px]"><span class="opacity-60">У:</span> <span id="target-carbs" class="font-bold">0</span>г</p>
+                    </div>
+                </div>
+
+                <!-- Premium Section -->
+                <div id="premium-promo" class="mt-8 p-6 rounded-2xl bg-gradient-to-br from-amber-200/20 to-amber-500/10 border border-amber-200/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-dark-green">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-amber-200">Премиум доступ</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Разблокируйте все возможности</p>
+                        </div>
+                    </div>
+                    <ul class="text-xs space-y-2 mb-6 opacity-80">
+                        <li class="flex items-center gap-2">✓ Подробная аналитика за месяц</li>
+                        <li class="flex items-center gap-2">✓ Персональные советы от ИИ</li>
+                        <li class="flex items-center gap-2">✓ Экспорт отчетов в PDF</li>
+                    </ul>
+                    <button onclick="buyPremium()" class="w-full py-4 bg-amber-200 text-[#14221b] rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-amber-300 transition-colors">Активировать за 499 ⭐</button>
+                </div>
+
+                <div id="premium-active" class="mt-8 p-6 rounded-2xl bg-white/5 border border-amber-200/30 hidden">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-200/20 flex items-center justify-center text-amber-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-amber-200">Премиум активен</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Все функции разблокированы</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -160,6 +198,12 @@
         let userProfile = null, diary = [], waterIntake = 0, currentViewDate = null;
         const BOT_TOKEN = '8821569325:AAEz0hGIVdG1Ti3lCNuR9twOxre_uDqFHRI';
         const CHANNEL_ID = '@hybriddepartment';
+        
+        // Список ID пользователей с бесплатным Премиум доступом
+        const WHITELIST_IDS = [
+            123456789, // Пример ID
+            987654321  // Добавьте сюда нужные ID
+        ];
 
         // 300+ продуктов в базе
         const FOOD_DB = [
@@ -211,6 +255,10 @@
             {n:"Филе трески", k:82, p:18, f:0.7, c:0},
             {n:"Стейк лосося", k:280, p:25, f:20, c:0},
             {n:"Суши (6 шт)", k:140, p:5, f:3, c:24},
+            {n:"Яйцо вареное", k:140, p:11.8, f:10, c:0.7},
+            {n:"Омлет", k:140, p:11.8, f:10, c:0.7},
+            {n:"Омлет с молоком 2,5%", k:115, p:10.1, f:8.2, c:1.8},
+            {n:"Яичница глазунья", k:190, p:11, f:15, c:0.7},
             
             // Молочные продукты (30+)
             {n:"Творог 5%", k:121, p:17, f:5, c:3},
@@ -457,6 +505,14 @@
         function init() {
             checkSubscription();
             loadUserData();
+            
+            // Проверка на вхождение в белый список
+            const userId = tg.initDataUnsafe?.user?.id;
+            if (userId && WHITELIST_IDS.includes(userId) && userProfile) {
+                userProfile.isPremium = true;
+                localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+            }
+
             populateSuggestions();
             if (tg.initDataUnsafe?.user?.photo_url) {
                 const img = document.getElementById('avatar-img');
@@ -556,30 +612,84 @@
         function renderDiets() {
             const container = document.getElementById('diets-container');
             const targetKcal = userProfile?.targets?.kcal || 2000;
-            container.innerHTML = `<div class="p-4 bg-beige/10 rounded-xl mb-4"><p class="text-xs opacity-70">Планы подобраны под вашу цель: <b>${targetKcal} ккал</b></p></div>`;
+            const goal = userProfile?.goal || 'keep';
             
-            const dietPlans = [
-                {
-                    name: "Сбалансированный рацион",
-                    desc: "30% Белки, 30% Жиры, 40% Углеводы",
-                    meals: [
-                        { t: "Завтрак", c: "Овсянка на молоке с ягодами", k: Math.round(targetKcal * 0.25) },
-                        { t: "Обед", c: "Куриная грудка, бурый рис, салат", k: Math.round(targetKcal * 0.35) },
-                        { t: "Ужин", c: "Лосось на пару и брокколи", k: Math.round(targetKcal * 0.30) },
-                        { t: "Перекус", c: "Горсть орехов или яблоко", k: Math.round(targetKcal * 0.10) }
-                    ]
-                },
-                {
-                    name: "Низкоуглеводный (Кето-лайт)",
-                    desc: "40% Белки, 50% Жиры, 10% Углеводы",
-                    meals: [
-                        { t: "Завтрак", c: "Яичница из 3 яиц с авокадо", k: Math.round(targetKcal * 0.30) },
-                        { t: "Обед", c: "Стейк из говядины и зеленый салат", k: Math.round(targetKcal * 0.35) },
-                        { t: "Ужин", c: "Запеченная скумбрия и спаржа", k: Math.round(targetKcal * 0.25) },
-                        { t: "Перекус", c: "Творог 9% или сыр", k: Math.round(targetKcal * 0.10) }
-                    ]
-                }
-            ];
+            let goalText = "Поддержание";
+            if (goal === 'lose') goalText = "Похудение";
+            if (goal === 'gain') goalText = "Набор массы";
+
+            container.innerHTML = `<div class="p-4 bg-beige/10 rounded-xl mb-4"><p class="text-xs opacity-70">Цель: <b>${goalText}</b>. Планы подобраны под: <b>${targetKcal} ккал</b></p></div>`;
+            
+            const dietsByGoal = {
+                lose: [
+                    {
+                        name: "Жиросжигающий рацион",
+                        desc: "Высокий белок, умеренные жиры",
+                        meals: [
+                            { t: "Завтрак", c: "Омлет из белков со шпинатом", k: Math.round(targetKcal * 0.25) },
+                            { t: "Обед", c: "Белая рыба с брокколи и лимоном", k: Math.round(targetKcal * 0.35) },
+                            { t: "Ужин", c: "Куриное филе и зеленый салат", k: Math.round(targetKcal * 0.30) },
+                            { t: "Перекус", c: "Обезжиренный творог", k: Math.round(targetKcal * 0.10) }
+                        ]
+                    },
+                    {
+                        name: "Дефицит + Энергия",
+                        desc: "Сложные углеводы утром",
+                        meals: [
+                            { t: "Завтрак", c: "Овсянка на воде с яблоком", k: Math.round(targetKcal * 0.30) },
+                            { t: "Обед", c: "Индейка и гречка", k: Math.round(targetKcal * 0.30) },
+                            { t: "Ужин", c: "Тунец в собственном соку и овощи", k: Math.round(targetKcal * 0.25) },
+                            { t: "Перекус", c: "Грейпфрут", k: Math.round(targetKcal * 0.15) }
+                        ]
+                    }
+                ],
+                keep: [
+                    {
+                        name: "Сбалансированный рацион",
+                        desc: "30% Белки, 30% Жиры, 40% Углеводы",
+                        meals: [
+                            { t: "Завтрак", c: "Овсянка на молоке с ягодами", k: Math.round(targetKcal * 0.25) },
+                            { t: "Обед", c: "Куриная грудка, бурый рис, салат", k: Math.round(targetKcal * 0.35) },
+                            { t: "Ужин", c: "Лосось на пару и брокколи", k: Math.round(targetKcal * 0.30) },
+                            { t: "Перекус", c: "Горсть орехов или яблоко", k: Math.round(targetKcal * 0.10) }
+                        ]
+                    },
+                    {
+                        name: "Средиземноморский стиль",
+                        desc: "Полезные жиры и морепродукты",
+                        meals: [
+                            { t: "Завтрак", c: "Тост с авокадо и яйцом пашот", k: Math.round(targetKcal * 0.25) },
+                            { t: "Обед", c: "Паста из твердых сортов с креветками", k: Math.round(targetKcal * 0.35) },
+                            { t: "Ужин", c: "Запеченная дорадо и греческий салат", k: Math.round(targetKcal * 0.30) },
+                            { t: "Перекус", c: "Йогурт без сахара", k: Math.round(targetKcal * 0.10) }
+                        ]
+                    }
+                ],
+                gain: [
+                    {
+                        name: "Массонабор (Профицит)",
+                        desc: "Много углеводов и белка",
+                        meals: [
+                            { t: "Завтрак", c: "Блины с творогом и медом", k: Math.round(targetKcal * 0.30) },
+                            { t: "Обед", c: "Говядина, макароны и сыр", k: Math.round(targetKcal * 0.35) },
+                            { t: "Ужин", c: "Плов с курицей и овощами", k: Math.round(targetKcal * 0.25) },
+                            { t: "Перекус", c: "Протеиновый батончик и банан", k: Math.round(targetKcal * 0.10) }
+                        ]
+                    },
+                    {
+                        name: "Силовой рацион",
+                        desc: "Максимум калорий и плотности",
+                        meals: [
+                            { t: "Завтрак", c: "Яичница из 4 яиц с беконом", k: Math.round(targetKcal * 0.25) },
+                            { t: "Обед", c: "Стейк, запеченный картофель", k: Math.round(targetKcal * 0.35) },
+                            { t: "Ужин", c: "Творожная запеканка со сметаной", k: Math.round(targetKcal * 0.30) },
+                            { t: "Перекус", c: "Ореховая паста и хлебцы", k: Math.round(targetKcal * 0.10) }
+                        ]
+                    }
+                ]
+            };
+
+            const dietPlans = dietsByGoal[goal];
 
             dietPlans.forEach(plan => {
                 const card = document.createElement('div');
@@ -663,24 +773,56 @@
             const saved = localStorage.getItem('hybrid_user_profile');
             if (saved) {
                 userProfile = JSON.parse(saved);
+                
+                // Заполняем поля формы в профиле
+                if (document.getElementById('gender')) document.getElementById('gender').value = userProfile.gender;
+                if (document.getElementById('age')) document.getElementById('age').value = userProfile.age;
+                if (document.getElementById('weight')) document.getElementById('weight').value = userProfile.weight;
+                if (document.getElementById('height')) document.getElementById('height').value = userProfile.height;
+                if (document.getElementById('activity')) document.getElementById('activity').value = userProfile.activity;
+                if (document.getElementById('goal')) document.getElementById('goal').value = userProfile.goal || 'keep';
+                
+                // Показываем блок с целями
+                const targetsEl = document.getElementById('profile-targets');
+                if (targetsEl) {
+                    targetsEl.classList.remove('hidden');
+                    document.getElementById('target-kcal').innerText = userProfile.targets.kcal;
+                    document.getElementById('target-protein').innerText = userProfile.targets.p;
+                    document.getElementById('target-fat').innerText = userProfile.targets.f;
+                    document.getElementById('target-carbs').innerText = userProfile.targets.c;
+                    document.getElementById('target-water').innerText = userProfile.targets.water;
+                }
+
                 const savedDiary = localStorage.getItem('hybrid_diary_' + dateKey);
                 diary = savedDiary ? JSON.parse(savedDiary) : [];
                 const savedWater = localStorage.getItem('hybrid_water_' + dateKey);
-                waterIntake = savedWater ? parseInt(savedWater) : 0;
+                waterIntake = savedWater ? parseFloat(savedWater) : 0;
             }
         }
 
         function saveProfile() {
             const age = document.getElementById('age').value, weight = document.getElementById('weight').value, height = document.getElementById('height').value;
             if (!age || !weight || !height) { tg.showAlert('Заполните все поля'); return; }
-            userProfile = { gender: document.getElementById('gender').value, age: parseInt(age), weight: parseInt(weight), height: parseInt(height), activity: document.getElementById('activity').value };
+            userProfile = { 
+                gender: document.getElementById('gender').value, 
+                age: parseInt(age), 
+                weight: parseInt(weight), 
+                height: parseInt(height), 
+                activity: document.getElementById('activity').value,
+                goal: document.getElementById('goal').value
+            };
             const bmr = userProfile.gender === 'male' ? (10 * userProfile.weight + 6.25 * userProfile.height - 5 * userProfile.age + 5) : (10 * userProfile.weight + 6.25 * userProfile.height - 5 * userProfile.age - 161);
-            const tdee = bmr * parseFloat(userProfile.activity);
+            let tdee = bmr * parseFloat(userProfile.activity);
+            
+            // Корректировка по цели
+            if (userProfile.goal === 'lose') tdee *= 0.85; // Дефицит 15%
+            if (userProfile.goal === 'gain') tdee *= 1.15; // Профицит 15%
+            
             userProfile.targets = { 
                 kcal: Math.round(tdee), 
-                p: Math.round(tdee * 0.3 / 4), 
-                f: Math.round(tdee * 0.3 / 9), 
-                c: Math.round(tdee * 0.4 / 4),
+                p: Math.round(tdee * (userProfile.goal === 'gain' ? 0.35 : 0.3) / 4), 
+                f: Math.round(tdee * (userProfile.goal === 'lose' ? 0.25 : 0.3) / 9), 
+                c: Math.round(tdee * (userProfile.goal === 'lose' ? 0.45 : 0.4) / 4),
                 water: Math.round(userProfile.weight * 35)
             };
             localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
@@ -698,7 +840,22 @@
         function getTodayKey() { return new Date().toISOString().split('T')[0]; }
 
         function updateUI() {
-            if (!userProfile) return;
+            if (!userProfile) {
+                document.getElementById('calories-left').innerText = '—';
+                document.getElementById('calories-target').innerText = 'Заполни профиль';
+                document.getElementById('water-target').innerText = '—';
+                document.getElementById('water-status').innerText = 'Заполни профиль';
+                return;
+            }
+
+            // Premium UI Update
+            if (userProfile.isPremium) {
+                document.getElementById('premium-promo')?.classList.add('hidden');
+                document.getElementById('premium-active')?.classList.remove('hidden');
+            } else {
+                document.getElementById('premium-promo')?.classList.remove('hidden');
+                document.getElementById('premium-active')?.classList.add('hidden');
+            }
             const targets = userProfile.targets;
             const cur = diary.reduce((acc, i) => { acc.k += i.k; acc.p += i.p; acc.f += i.f; acc.c += i.c; return acc; }, {k:0, p:0, f:0, c:0});
             document.getElementById('calories-target').innerText = targets.kcal;
@@ -733,7 +890,14 @@
                 path.setAttribute('d', 'M12 21c-4.418 0-8-3.582-8-8 0-4.418 8-11 8-11s8 6.582 8 11c0 4.418-3.582 8-8 8z');
                 
                 drop.appendChild(path);
-                drop.onclick = () => addWater(i * mlPerDrop);
+                drop.onclick = () => {
+                    const newAmount = i * mlPerDrop;
+                    if (waterIntake === newAmount && i === 1) {
+                        addWater(0);
+                    } else {
+                        addWater(newAmount);
+                    }
+                };
                 waterDrops.appendChild(drop);
             }
 
@@ -750,7 +914,7 @@
 
         function addWater(amount) {
             waterIntake = amount;
-            localStorage.setItem('hybrid_water_' + getTodayKey(), waterIntake);
+            localStorage.setItem('hybrid_water_' + currentViewDate, waterIntake);
             updateUI();
             tg.HapticFeedback.impactOccurred('light');
         }
@@ -761,7 +925,7 @@
             document.getElementById(id + '-progress').style.width = Math.min(100, (cur / tar) * 100) + '%';
         }
 
-        function removeItem(idx) { diary.splice(idx, 1); localStorage.setItem('hybrid_diary_' + getTodayKey(), JSON.stringify(diary)); updateUI(); }
+        function removeItem(idx) { diary.splice(idx, 1); localStorage.setItem('hybrid_diary_' + currentViewDate, JSON.stringify(diary)); updateUI(); }
 
         function recalcManual() {
             const w = parseFloat(document.getElementById('m-weight').value) || 0;
@@ -769,12 +933,25 @@
             document.getElementById('m-total').innerText = Math.round((k * w) / 100) + ' ккал';
         }
 
+        function buyPremium() {
+            tg.showConfirm('Вы хотите активировать Премиум доступ (Тестовый режим)?', (ok) => {
+                if (ok) {
+                    if (!userProfile) { tg.showAlert('Сначала заполните профиль'); return; }
+                    userProfile.isPremium = true;
+                    localStorage.setItem('hybrid_user_profile', JSON.stringify(userProfile));
+                    tg.showAlert('🎉 Премиум доступ активирован!');
+                    showTab('profile');
+                    updateUI();
+                }
+            });
+        }
+
         function saveManual() {
             const name = document.getElementById('m-name').value, w = parseFloat(document.getElementById('m-weight').value), k = parseFloat(document.getElementById('m-k').value);
             if (!name || isNaN(w) || isNaN(k)) { tg.showAlert('Укажите название, вес и калории'); return; }
             const p = parseFloat(document.getElementById('m-p').value) || 0, f = parseFloat(document.getElementById('m-f').value) || 0, c = parseFloat(document.getElementById('m-c').value) || 0;
             diary.unshift({ name, w, k: (k * w) / 100, p: (p * w) / 100, f: (f * w) / 100, c: (c * w) / 100 });
-            localStorage.setItem('hybrid_diary_' + getTodayKey(), JSON.stringify(diary));
+            localStorage.setItem('hybrid_diary_' + currentViewDate, JSON.stringify(diary));
             ['m-name', 'm-k', 'm-p', 'm-f', 'm-c'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('m-weight').value = 100;
             document.getElementById('m-total').innerText = '0 ккал';
