@@ -159,7 +159,7 @@
 
         <!-- Diets -->
         <section id="diets-view" class="tab-content">
-            <h2 class="text-3xl mb-6">Примеры диет</h2>
+            <h2 class="text-3xl mb-6">Диета</h2>
             <div id="diets-container"></div>
         </section>
 
@@ -172,8 +172,8 @@
         <nav class="fixed bottom-6 left-4 right-4 h-20 glass-card flex items-center justify-around px-4">
             <button onclick="showTab('dashboard')" class="nav-btn flex flex-col items-center transition-all" id="nav-dashboard"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Дневник</span></button>
             <button onclick="showTab('stats')" class="nav-btn flex flex-col items-center opacity-40" id="nav-stats"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Статистика</span></button>
-            <button onclick="showTab('diets')" class="nav-btn flex flex-col items-center opacity-40" id="nav-diets"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Диеты</span></button>
-            <button onclick="showTab('analytics')" class="nav-btn flex flex-col items-center opacity-40" id="nav-analytics"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Аналитика</span></button>
+            <button onclick="showTab('diets')" class="nav-btn flex flex-col items-center opacity-40" id="nav-diets"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Диета</span></button>
+            <button onclick="showTab('analytics')" class="nav-btn flex flex-col items-center opacity-40" id="nav-analytics"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Анализ</span></button>
             <button onclick="showTab('profile')" class="nav-btn flex flex-col items-center opacity-40" id="nav-profile"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="text-[9px] uppercase mt-1 font-bold">Профиль</span></button>
         </nav>
     </div>
@@ -186,12 +186,79 @@
         const CHANNEL_ID = '@hybriddepartment';
         const WHITELIST_IDS = [123456789, 987654321];
 
-        const RECIPES = {"Омлет с овощами": {"r": "Разбейте яйца в миску, добавьте немного молока или воды, посолите и взбейте вилкой. Нарежьте огурец или помидор мелкими кусочками. Разогрейте сковороду с каплей масла, вылейте яичную смесь. Готовьте на медленном огне под крышкой 5-7 минут до готовности. Подавайте со свежими овощами.", "i": {"Яйцо куриное (1 шт)": 110, "Помидор": 50, "Огурец": 50, "Масло подсолнечное": 5}}, "Гречка с курицей": {"r": "Промойте гречку и залейте водой в соотношении 1:2. Поставьте на огонь, после закипания варите 15-20 минут до впитывания воды. Куриную грудку нарежьте кусочками, посолите и обжарьте на сковороде или запеките в духовке 20 минут при 180 градусах. Смешайте готовую гречку с курицей.", "i": {"Гречка (сухая)": 70, "Куриная грудка (сырая)": 150, "Масло подсолнечное": 5}}, "Творог с яблоком и медом": {"r": "Выложите творог в тарелку. Яблоко промойте, удалите сердцевину и нарежьте мелкими кубиками или натрите на терке. Смешайте творог с яблоком, добавьте ложку меда. Можно добавить щепотку корицы для аромата. Тщательно перемешайте.", "i": {"Творог 5%": 200, "Яблоко": 100, "Мед": 15}}, "Рыба запеченная с картофелем": {"r": "Картофель очистите и нарежьте тонкими кружочками. Рыбу (минтай или треску) посолите, добавьте специи. Выложите картофель и рыбу на противень, слегка смазанный маслом. Запекайте в духовке 30-35 минут при температуре 190 градусов до золотистой корочки картофеля.", "i": {"Минтай филе": 200, "Картофель": 200, "Масло подсолнечное": 10}}, "Макароны с сыром": {"r": "Вскипятите воду, посолите и засыпьте макароны. Варите 8-10 минут до готовности, затем слейте воду. Сыр натрите на мелкой терке. Добавьте в горячие макароны кусочек сливочного масла и тертый сыр, перемешайте, пока сыр не расплавится.", "i": {"Макароны": 80, "Сыр Российский": 40, "Масло сливочное": 10}}, "Овсяная каша на молоке": {"r": "В кастрюлю налейте молоко, доведите до кипения. Всыпьте овсяные хлопья, уменьшите огонь. Варите, помешивая, 5-10 минут (в зависимости от типа хлопьев). В конце добавьте щепотку соли и сахара по вкусу. Дайте настояться под крышкой 5 минут.", "i": {"Овсянка": 50, "Молоко 2.5%": 200, "Масло сливочное": 5}}};
+        const RECIPES = {
+            "Омлет с овощами": {
+                "r": "Разбейте яйца в миску, добавьте немного молока или воды, посолите и взбейте вилкой. Нарежьте огурец или помидор мелкими кусочками. Разогрейте сковороду с каплей масла, вылейте яичную смесь. Готовьте на медленном огне под крышкой 5-7 минут до готовности. Подавайте со свежими овощами.",
+                "i": {"Яйцо куриное (1 шт)": 110, "Помидор": 50, "Огурец": 50, "Масло подсолнечное": 5}
+            },
+            "Гречка с курицей": {
+                "r": "Промойте гречку и залейте водой в соотношении 1:2. Поставьте на огонь, после закипания варите 15-20 минут до впитывания воды. Куриную грудку нарежьте кусочками, посолите и обжарьте на сковороде или запеките в духовке 20 минут при 180 градусах. Смешайте готовую гречку с курицей.",
+                "i": {"Гречка (сухая)": 70, "Куриная грудка (сырая)": 150, "Масло подсолнечное": 5}
+            },
+            "Творог с яблоком и медом": {
+                "r": "Выложите творог в тарелку. Яблоко промойте, удалите сердцевину и нарежьте мелкими кубиками или натрите на терке. Смешайте творог с яблоком, добавьте ложку меда. Можно добавить щепотку корицы для аромата. Тщательно перемешайте.",
+                "i": {"Творог 5%": 200, "Яблоко": 100, "Мед": 15}
+            },
+            "Рыба запеченная с картофелем": {
+                "r": "Картофель очистите и нарежьте тонкими кружочками. Рыбу (минтай или треску) посолите, добавьте специи. Выложите картофель и рыбу на противень, слегка смазанный маслом. Запекайте в духовке 30-35 минут при температуре 190 градусов до золотистой корочки картофеля.",
+                "i": {"Минтай филе": 200, "Картофель": 200, "Масло подсолнечное": 10}
+            },
+            "Макароны с сыром": {
+                "r": "Вскипятите воду, посолите и засыпьте макароны. Варите 8-10 минут до готовности, затем слейте воду. Сыр натрите на мелкой терке. Добавьте в горячие макароны кусочек сливочного масла и тертый сыр, перемешайте, пока сыр не расплавится.",
+                "i": {"Макароны": 80, "Сыр Российский": 40, "Масло сливочное": 10}
+            },
+            "Овсяная каша на молоке": {
+                "r": "В кастрюлю налейте молоко, доведите до кипения. Всыпьте овсяные хлопья, уменьшите огонь. Варите, помешивая, 5-10 минут (в зависимости от типа хлопьев). В конце добавьте щепотку соли и сахара по вкусу. Дайте настояться под крышкой 5 минут.",
+                "i": {"Овсянка": 50, "Молоко 2.5%": 200, "Масло сливочное": 5}
+            }
+        };
 
-        const ALTERNATIVES = {"Омлет с овощами": ["Творог с яблоком и медом", "Овсяная каша на молоке"], "Гречка с курицей": ["Рыба запеченная с картофелем", "Макароны с сыром"], "Творог с яблоком и медом": ["Омлет с овощами", "Банан"], "Рыба запеченная с картофелем": ["Гречка с курицей", "Индейка филе"], "Макароны с сыром": ["Гречка с курицей", "Картофель с рыбой"]};
+        const ALTERNATIVES = {
+            "Омлет с овощами": ["Творог с яблоком и медом", "Овсяная каша на молоке"],
+            "Гречка с курицей": ["Рыба запеченная с картофелем", "Макароны с сыром"],
+            "Творог с яблоком и медом": ["Омлет с овощами", "Банан"],
+            "Рыба запеченная с картофелем": ["Гречка с курицей", "Индейка филе"],
+            "Макароны с сыром": ["Гречка с курицей", "Картофель с рыбой"],
+            "Овсяная каша на молоке": ["Омлет с овощами", "Творог с яблоком"]
+        };
 
-        // Расширенная база продуктов (420+)
-        const FOOD_DB = [{"n": "Куриная грудка (сырая)", "k": 113, "p": 23.5, "f": 1.9, "c": 0}, {"n": "Куриное бедро (без кожи)", "k": 130, "p": 19, "f": 6, "c": 0}, {"n": "Индейка филе", "k": 115, "p": 24, "f": 2, "c": 0}, {"n": "Говядина постная", "k": 158, "p": 22, "f": 7, "c": 0}, {"n": "Минтай филе", "k": 72, "p": 16, "f": 0.5, "c": 0}, {"n": "Горбуша", "k": 142, "p": 20, "f": 6, "c": 0}, {"n": "Треска", "k": 78, "p": 17, "f": 0.7, "c": 0}, {"n": "Яйцо куриное (1 шт)", "k": 74, "p": 6.3, "f": 5, "c": 0.4}, {"n": "Творог 5%", "k": 121, "p": 17, "f": 5, "c": 3}, {"n": "Творог 9%", "k": 159, "p": 16, "f": 9, "c": 3}, {"n": "Сметана 15%", "k": 160, "p": 2.6, "f": 15, "c": 3.6}, {"n": "Молоко 2.5%", "k": 52, "p": 2.8, "f": 2.5, "c": 4.7}, {"n": "Кефир 1%", "k": 40, "p": 3, "f": 1, "c": 4}, {"n": "Сыр Российский", "k": 363, "p": 23, "f": 29, "c": 0}, {"n": "Гречка (сухая)", "k": 330, "p": 12, "f": 3, "c": 64}, {"n": "Рис (сухой)", "k": 344, "p": 6.7, "f": 0.7, "c": 78}, {"n": "Овсянка", "k": 366, "p": 12, "f": 7, "c": 60}, {"n": "Макароны", "k": 350, "p": 12, "f": 1.5, "c": 71}, {"n": "Картофель", "k": 77, "p": 2, "f": 0.4, "c": 17}, {"n": "Хлеб ржаной", "k": 259, "p": 9, "f": 3, "c": 48}, {"n": "Огурец", "k": 15, "p": 0.8, "f": 0.1, "c": 3}, {"n": "Помидор", "k": 18, "p": 0.9, "f": 0.2, "c": 3.9}, {"n": "Капуста", "k": 27, "p": 1.8, "f": 0.1, "c": 4.7}, {"n": "Морковь", "k": 41, "p": 0.9, "f": 0.2, "c": 9.6}, {"n": "Лук", "k": 40, "p": 1.1, "f": 0.1, "c": 9}, {"n": "Яблоко", "k": 52, "p": 0.3, "f": 0.2, "c": 14}, {"n": "Банан", "k": 89, "p": 1.1, "f": 0.3, "c": 23}, {"n": "Масло подсолнечное", "k": 884, "p": 0, "f": 100, "c": 0}, {"n": "Масло сливочное", "k": 748, "p": 0.5, "f": 82.5, "c": 0.8}, {"n": "Мед", "k": 304, "p": 0.3, "f": 0, "c": 82}, {"n": "Протеин (порция 30г)", "k": 110, "p": 24, "f": 1, "c": 2}];
+        const FOOD_DB = [
+            {"n": "Куриная грудка (сырая)", "k": 113, "p": 23.5, "f": 1.9, "c": 0},
+            {"n": "Куриное бедро (без кожи)", "k": 130, "p": 19, "f": 6, "c": 0},
+            {"n": "Индейка филе", "k": 115, "p": 24, "f": 2, "c": 0},
+            {"n": "Говядина постная", "k": 158, "p": 22, "f": 7, "c": 0},
+            {"n": "Минтай филе", "k": 72, "p": 16, "f": 0.5, "c": 0},
+            {"n": "Горбуша", "k": 142, "p": 20, "f": 6, "c": 0},
+            {"n": "Треска", "k": 78, "p": 17, "f": 0.7, "c": 0},
+            {"n": "Яйцо куриное (1 шт)", "k": 74, "p": 6.3, "f": 5, "c": 0.4},
+            {"n": "Творог 5%", "k": 121, "p": 17, "f": 5, "c": 3},
+            {"n": "Творог 9%", "k": 159, "p": 16, "f": 9, "c": 3},
+            {"n": "Сметана 15%", "k": 160, "p": 2.6, "f": 15, "c": 3.6},
+            {"n": "Молоко 2.5%", "k": 52, "p": 2.8, "f": 2.5, "c": 4.7},
+            {"n": "Кефир 1%", "k": 40, "p": 3, "f": 1, "c": 4},
+            {"n": "Сыр Российский", "k": 363, "p": 23, "f": 29, "c": 0},
+            {"n": "Гречка (сухая)", "k": 330, "p": 12, "f": 3, "c": 64},
+            {"n": "Рис (сухой)", "k": 344, "p": 6.7, "f": 0.7, "c": 78},
+            {"n": "Овсянка", "k": 366, "p": 12, "f": 7, "c": 60},
+            {"n": "Макароны", "k": 350, "p": 12, "f": 1.5, "c": 71},
+            {"n": "Картофель", "k": 77, "p": 2, "f": 0.4, "c": 17},
+            {"n": "Хлеб ржаной", "k": 259, "p": 9, "f": 3, "c": 48},
+            {"n": "Огурец", "k": 15, "p": 0.8, "f": 0.1, "c": 3},
+            {"n": "Помидор", "k": 18, "p": 0.9, "f": 0.2, "c": 3.9},
+            {"n": "Капуста", "k": 27, "p": 1.8, "f": 0.1, "c": 4.7},
+            {"n": "Морковь", "k": 41, "p": 0.9, "f": 0.2, "c": 9.6},
+            {"n": "Лук", "k": 40, "p": 1.1, "f": 0.1, "c": 9},
+            {"n": "Яблоко", "k": 52, "p": 0.3, "f": 0.2, "c": 14},
+            {"n": "Банан", "k": 89, "p": 1.1, "f": 0.3, "c": 23},
+            {"n": "Масло подсолнечное", "k": 884, "p": 0, "f": 100, "c": 0},
+            {"n": "Масло сливочное", "k": 748, "p": 0.5, "f": 82.5, "c": 0.8},
+            {"n": "Мед", "k": 304, "p": 0.3, "f": 0, "c": 82},
+            {"n": "Протеин (порция 30г)", "k": 110, "p": 24, "f": 1, "c": 2}
+        ];
+
+        window.shopPeriod = 'day';
+        window.analyticsPeriod = 'day';
+        window.altIdx = {};
 
         function init() {
             checkSubscription();
@@ -287,7 +354,6 @@
             const goal = userProfile?.goal || 'keep';
             let goalText = goal === 'lose' ? "Похудение" : (goal === 'gain' ? "Набор массы" : "Поддержание");
             
-            // Базовые рационы
             const basePlans = {
                 lose: { name: "Диета: Снижение веса", meals: [{t:"Завтрак", c:"Омлет с овощами"}, {t:"Обед", c:"Рыба запеченная с картофелем"}, {t:"Ужин", c:"Творог с яблоком и медом"}] },
                 keep: { name: "Диета: Поддержание", meals: [{t:"Завтрак", c:"Овсяная каша на молоке"}, {t:"Обед", c:"Гречка с курицей"}, {t:"Ужин", c:"Рыба запеченная с картофелем"}] },
@@ -330,14 +396,11 @@
             container.appendChild(card);
         }
 
-        window.shopPeriod = 'day';
         function setShopPeriod(p) { window.shopPeriod = p; renderDiets(); }
 
         function replaceWithAlternative(name, idx) {
             const alts = ALTERNATIVES[name];
             if (!alts) return;
-            // Просто берем следующую альтернативу по кругу
-            if (!window.altIdx) window.altIdx = {};
             if (window.altIdx[idx] === undefined) window.altIdx[idx] = 0;
             const nextAlt = alts[window.altIdx[idx] % alts.length];
             window.altIdx[idx]++;
@@ -354,14 +417,11 @@
                 const r = RECIPES[m.c];
                 if (r) for (let ing in r.i) items[ing] = (items[ing] || 0) + (r.i[ing] * mult);
             });
-            let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):
-
-`;
+            let str = `🛒 СПИСОК (${window.shopPeriod === 'week' ? 'НЕДЕЛЯ' : 'ДЕНЬ'}):\n\n`;
             for (let n in items) {
                 let v = items[n], u = "г";
                 if (v >= 1000) { v = (v/1000).toFixed(1); u = "кг"; }
-                str += `• ${n}: ${v}${u}
-`;
+                str += `• ${n}: ${v}${u}\n`;
             }
             tg.showAlert(str);
         }
@@ -371,7 +431,7 @@
             if (!recipe) { tg.showAlert("Рецепт скоро будет добавлен!"); return; }
             currentRecipe = { name, recipe };
             document.getElementById('recipe-title').innerText = name;
-            document.getElementById('recipe-portions').value = 1; window.recipePortions = 1;
+            document.getElementById('recipe-portions').value = 1;
             document.getElementById('recipe-description').innerText = recipe.r;
             updateRecipeCalc();
             document.getElementById('recipe-modal').classList.add('active');
@@ -392,7 +452,6 @@
             const portions = parseInt(document.getElementById('recipe-portions').value) || 1;
             const recipe = currentRecipe.recipe;
             let totalK = 0, totalP = 0, totalF = 0, totalC = 0;
-            
             for (let ing in recipe.i) {
                 const food = FOOD_DB.find(f => f.n === ing);
                 if (food) {
@@ -403,7 +462,6 @@
                     totalC += (food.c * amount) / 100;
                 }
             }
-            
             diary.unshift({ name: currentRecipe.name + ` (${portions} порц.)`, w: 100, k: totalK, p: totalP, f: totalF, c: totalC });
             localStorage.setItem('hybrid_diary_' + currentViewDate, JSON.stringify(diary));
             closeRecipeModal();
@@ -412,41 +470,14 @@
             tg.showAlert('✅ Блюдо добавлено в дневник!');
         }
 
-        function closeRecipeModal() {
-            document.getElementById('recipe-modal').classList.remove('active');
-        }
+        function closeRecipeModal() { document.getElementById('recipe-modal').classList.remove('active'); }
 
-        function showAlternatives(name) {
-            const alts = ALTERNATIVES[name];
-            if (!alts || alts.length === 0) { tg.showAlert("Для этого блюда пока нет альтернатив"); return; }
-            tg.showAlert(`🔄 ВАРИАНТЫ ЗАМЕНЫ:\n\n${alts.map(a => '• ' + a).join('\n')}`);
-        }
-
-        function generateShoppingList(plan) {
-            let items = {};
-            plan.meals.forEach(m => {
-                const r = RECIPES[m.c];
-                if (r) for (let ing in r.i) items[ing] = (items[ing] || 0) + (r.i[ing] * 7);
-            });
-            let listStr = `🛒 СПИСОК ПОКУПОК (СЫРЫЕ ПРОДУКТЫ):\n\n`;
-            for (let name in items) {
-                let val = items[name], unit = "г";
-                if (val >= 1000) { val = (val / 1000).toFixed(1); unit = "кг"; }
-                listStr += `• ${name}: ${val}${unit}\n`;
-            }
-            tg.showAlert(listStr);
-        }
-
-        
-        window.analyticsPeriod = 'day';
         function setAnalyticsPeriod(p) { window.analyticsPeriod = p; renderAnalytics(); }
 
         function renderAnalytics() {
             const container = document.getElementById('analytics-container');
             if (!userProfile) { container.innerHTML = '<p class="text-center opacity-50">Заполните профиль</p>'; return; }
             const targets = userProfile.targets;
-            
-            // Логика фильтрации данных по периоду
             let days = window.analyticsPeriod === 'week' ? 7 : (window.analyticsPeriod === 'month' ? 30 : 1);
             let history = [];
             for (let i = 0; i < days; i++) {
@@ -455,11 +486,8 @@
                 const data = localStorage.getItem('hybrid_diary_' + key);
                 if (data) history.push(...JSON.parse(data));
             }
-            
             const cur = history.reduce((acc, i) => { acc.k += i.k; acc.p += i.p; acc.f += i.f; acc.c += i.c; return acc; }, {k:0, p:0, f:0, c:0});
-            // Среднее за период
             if (days > 1) { cur.k /= days; cur.p /= days; cur.f /= days; cur.c /= days; }
-            
             const calPct = Math.round((cur.k / targets.kcal) * 100);
             const periodText = window.analyticsPeriod === 'week' ? 'Неделя' : (window.analyticsPeriod === 'month' ? 'Месяц' : 'День');
 
@@ -483,53 +511,6 @@
                     ${renderMacro('Жиры', cur.f, targets.f, 'text-amber-200')}
                     ${renderMacro('Углеводы', cur.c, targets.c, 'text-green-300')}
                 </div>
-            `;
-        }
-            const targets = userProfile.targets;
-            const cur = diary.reduce((acc, i) => { acc.k += i.k; acc.p += i.p; acc.f += i.f; acc.c += i.c; return acc; }, {k:0, p:0, f:0, c:0});
-            const calPct = Math.round((cur.k / targets.kcal) * 100);
-            
-            // Динамические контрольные точки
-            let checkpoints = [];
-            const today = getTodayKey();
-            const diaryHistory = [];
-            for (let i = 0; i < 7; i++) {
-                const d = new Date(); d.setDate(d.getDate() - i);
-                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                const data = localStorage.getItem('hybrid_diary_' + key);
-                if (data) diaryHistory.push(JSON.parse(data));
-            }
-
-            if (diary.length > 0) checkpoints.push('✅ Дневник на сегодня заполнен');
-            else checkpoints.push('❌ Сегодня записей еще нет');
-
-            if (diaryHistory.length >= 3) checkpoints.push('🔥 Серия: 3+ дня подряд!');
-            
-            if (calPct >= 90 && calPct <= 105) checkpoints.push('🎯 Идеальное попадание в калории');
-            else if (calPct > 105) checkpoints.push('⚠️ Небольшой перебор калорий');
-            
-            if (cur.p >= targets.p * 0.8) checkpoints.push('💪 Норма белка выполнена');
-            if (waterIntake >= 2000) checkpoints.push('💧 Гидратация: отлично');
-
-            let advice = "";
-            if (calPct < 70) advice = "Вы едите слишком мало. Добавьте полезных жиров или сложных углеводов.";
-            else if (calPct <= 105) advice = "Отличная работа! Вы придерживаетесь плана. Продолжайте в том же духе.";
-            else advice = "Вы превысили норму. Попробуйте завтра сделать акцент на овощах и легком белке.";
-
-            const motivationalQuotes = [
-                "Заботьтесь о своем теле сегодня — и оно позаботится о вас завтра.",
-                "Дисциплина — это выбор между тем, что вы хотите сейчас, и тем, что вы хотите больше всего.",
-                "Ваше тело — единственный дом, в котором вам придется жить всегда.",
-                "Успех — это сумма маленьких усилий, повторяющихся изо дня в день."
-            ];
-            const quote = motivationalQuotes[new Date().getDate() % motivationalQuotes.length];
-            
-            container.innerHTML = `
-                <div class="flex gap-2 mb-6"><button class="px-4 py-2 rounded-full bg-white/10 text-[10px] uppercase font-bold border border-beige/20">День</button><button class="px-4 py-2 rounded-full opacity-40 text-[10px] uppercase font-bold">Неделя</button><button class="px-4 py-2 rounded-full opacity-40 text-[10px] uppercase font-bold">Месяц</button></div>
-                <div class="glass-card p-5 mb-4"><div class="flex justify-between items-center mb-2"><h4 class="text-xs uppercase opacity-60">Калории</h4><span class="text-xs font-bold">${calPct}%</span></div><div class="progress-bar mb-2"><div class="progress-fill" style="width: ${Math.min(calPct, 100)}%"></div></div><p class="text-sm font-bold">${Math.round(cur.k)} / ${targets.kcal} ккал</p><p class="text-[10px] opacity-70 mt-2">${advice}</p></div>
-                <div class="glass-card p-5 mb-4"><h4 class="text-xs uppercase opacity-60 mb-4">Нутриенты</h4>${renderMacro('Белки', cur.p, targets.p, 'text-blue-300')}${renderMacro('Жиры', cur.f, targets.f, 'text-amber-200')}${renderMacro('Углеводы', cur.c, targets.c, 'text-green-300')}</div>
-                <div class="glass-card p-5 mb-4"><h4 class="text-xs uppercase opacity-60 mb-3">Контрольные точки</h4><ul class="space-y-2">${checkpoints.map(cp => `<li class="text-xs">${cp}</li>`).join('')}</ul></div>
-                <div class="p-5 rounded-2xl bg-beige text-dark-green"><h4 class="font-bold mb-1">Мотивация</h4><p class="text-xs italic">"${quote}"</p></div>
             `;
         }
 
